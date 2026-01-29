@@ -368,7 +368,7 @@ const CalculatorPage: React.FC = () => {
       if (loadedAny) {
         toast.success('Załadowano domyślny sprzęt z profilu');
       } else {
-        toast.info('Brak zapisanego domyślnego sprzętu w profilu');
+        toast('Brak zapisanego domyślnego sprzętu w profilu', { icon: 'ℹ️' });
       }
     } catch (error) {
       console.error('Błąd ładowania sprzętu:', error);
