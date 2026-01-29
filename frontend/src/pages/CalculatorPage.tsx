@@ -57,10 +57,10 @@ import { calculatorApi, ingredientsApi, weatherApi, userApi, CalculationRequest,
 import { useAuthStore } from '../store/authStore';
 import { IMAGES, PIZZA_STYLE_IMAGES } from '../constants/images';
 import { motion, AnimatePresence as FramerAnimatePresence } from 'framer-motion';
+import toast from 'react-hot-toast';
 
 // Wrapper to fix TypeScript compatibility issue with framer-motion
 const AnimatePresence = FramerAnimatePresence as React.FC<React.PropsWithChildren<{ mode?: 'wait' | 'sync' | 'popLayout'; initial?: boolean }>>;
-import toast from 'react-hot-toast';
 
 const MotionBox = motion(Box);
 const MotionCard = motion(Card);
