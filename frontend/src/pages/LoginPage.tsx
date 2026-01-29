@@ -57,7 +57,7 @@ const LoginPage: React.FC = () => {
       toast.success('Zalogowano pomyślnie!');
       navigate(from, { replace: true });
     } catch (err: unknown) {
-      if (err instanceof AxiosError && isApiError(err.response?.data)) {
+      if (err instanceof AxiosError && err.response?.data && isApiError(err.response.data)) {
         setError(err.response.data.message);
       } else {
         setError('Nieprawidłowy email lub hasło');

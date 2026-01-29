@@ -65,7 +65,7 @@ const RegisterPage: React.FC = () => {
       toast.success('Konto utworzone pomyślnie!');
       navigate('/calculator');
     } catch (err: unknown) {
-      if (err instanceof AxiosError && isApiError(err.response?.data)) {
+      if (err instanceof AxiosError && err.response?.data && isApiError(err.response.data)) {
         setError(err.response.data.message);
       } else {
         setError('Wystąpił błąd podczas rejestracji');
