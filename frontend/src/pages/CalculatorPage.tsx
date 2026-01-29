@@ -56,7 +56,10 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { calculatorApi, ingredientsApi, weatherApi, userApi, CalculationRequest, CalculationResponse, WeatherData, FermentationAdjustment } from '../services/api';
 import { useAuthStore } from '../store/authStore';
 import { IMAGES, PIZZA_STYLE_IMAGES } from '../constants/images';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence as FramerAnimatePresence } from 'framer-motion';
+
+// Wrapper to fix TypeScript compatibility issue with framer-motion
+const AnimatePresence = FramerAnimatePresence as React.FC<React.PropsWithChildren<{ mode?: 'wait' | 'sync' | 'popLayout'; initial?: boolean }>>;
 import toast from 'react-hot-toast';
 
 const MotionBox = motion(Box);

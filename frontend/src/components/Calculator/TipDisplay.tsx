@@ -23,7 +23,10 @@ import {
   SwapHoriz as ChangeIcon,
   Close as CloseIcon,
 } from '@mui/icons-material';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence as FramerAnimatePresence } from 'framer-motion';
+
+// Wrapper to fix TypeScript compatibility issue with framer-motion
+const AnimatePresence = FramerAnimatePresence as React.FC<React.PropsWithChildren<{ mode?: 'wait' | 'sync' | 'popLayout'; initial?: boolean }>>;
 import { tipApi, Tip, TipCollection, TipContext } from '../../services/api';
 import { useDebounce } from '../../hooks/useDebounce';
 
