@@ -1,0 +1,69 @@
+# Konfiguracja Docker
+# Używana gdy SPRING_PROFILES_ACTIVE=docker
+
+spring:
+  data:
+    mongodb:
+      uri: mongodb://${MONGO_USER:pizzamaestro}:${MONGO_PASSWORD:PizzaMaestro2024!}@mongodb:27017/${MONGO_DATABASE:pizzamaestro}?authSource=admin
+      auto-index-creation: true
+
+  # Wyłącz devtools w Docker
+  devtools:
+    restart:
+      enabled: false
+    livereload:
+      enabled: false
+
+# Logowanie dla Docker - mniej szczegółowe
+logging:
+  level:
+    root: INFO
+    com.pizzamaestro: INFO
+    org.springframework.web: WARN
+    org.springframework.data.mongodb: WARN
+    org.springframework.security: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+# Optymalizacje produkcyjne
+server:
+  tomcat:
+    threads:
+      max: 200
+      min-spare: 10
+    max-connections: 10000
+  compression:
+    enabled: true
+    mime-types: text/html,text/xml,text/plain,text/css,application/javascript,application/json
+    min-response-size: 1024
+
+# Cache
+spring.cache:
+  type: caffeine
+  cache-names: flours,waters,yeasts,salts,ingredients,guides,freeGuides,popularGuides
+  caffeine:
+    spec: maximumSize=500,expireAfterWrite=10m
+
+# Actuator endpoints
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: when_authorized
+  health:
+    mongo:
+      enabled: true
+
+# Security
+app:
+  jwt:
+    secret: ${JWT_SECRET}
+    expiration-ms: 86400000
+    refresh-expiration-ms: 604800000
+
+# CORS
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000}

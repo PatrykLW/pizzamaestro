@@ -1,0 +1,19 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/pizzamaestro-test
+      
+jwt:
+  secret: dGVzdFNlY3JldEtleUZvclBpenphTWFlc3Ryb1Rlc3RpbmdPbmx5MTIzNDU2Nzg5MA==
+  expiration: 3600000
+  refresh-expiration: 86400000
+
+pizzamaestro:
+  free-tier:
+    max-calculations-per-month: 100
+    max-saved-recipes: 50
+    sms-enabled: false
+
+logging:
+  level:
+    com.pizzamaestro: DEBUG

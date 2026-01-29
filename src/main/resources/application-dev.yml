@@ -1,0 +1,59 @@
+# Profil deweloperski - lokalny development
+spring:
+  data:
+    mongodb:
+      uri: mongodb://pizzamaestro:PizzaMaestro2024!@localhost:27017/pizzamaestro?authSource=admin
+      auto-index-creation: true
+
+# JWT - klucz deweloperski (NIE UŻYWAĆ NA PRODUKCJI!)
+jwt:
+  secret: cGl6emFNYWVzdHJvRGV2ZWxvcG1lbnRTZWNyZXRLZXlGb3JEZXZNT05MWTEyMzQ1Njc4OTA=
+  expiration: 86400000
+  refresh-expiration: 604800000
+
+# Wyłącz integracje zewnętrzne w dev
+twilio:
+  enabled: false
+  account-sid: ""
+  auth-token: ""
+  phone-number: ""
+
+weather:
+  enabled: false
+  api-key: ""
+
+# Limity dla developerów
+pizzamaestro:
+  free-tier:
+    max-calculations-per-month: 1000
+    max-saved-recipes: 100
+    sms-enabled: false
+
+# Rozbudowane logowanie dla testów
+logging:
+  level:
+    root: INFO
+    com.pizzamaestro: DEBUG
+    com.pizzamaestro.controller: DEBUG
+    com.pizzamaestro.service: DEBUG
+    com.pizzamaestro.security: DEBUG
+    com.pizzamaestro.config: DEBUG
+    org.springframework.data.mongodb: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.web: DEBUG
+    org.springframework.web.servlet.mvc.method.annotation: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n"
+  file:
+    name: logs/pizzamaestro.log
+    path: logs
+  logback:
+    rollingpolicy:
+      max-file-size: 10MB
+      max-history: 30
+      total-size-cap: 100MB
+
+# Debug mode
+debug: false
+trace: false
