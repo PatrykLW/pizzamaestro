@@ -50,16 +50,6 @@ public class DataInitializer implements CommandLineRunner {
     @Value("${app.test-users.user-password:#{null}}")
     private String userPassword;
     
-    public DataInitializer(UserRepository userRepository, 
-                          IngredientRepository ingredientRepository,
-                          RecipeRepository recipeRepository, 
-                          PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.ingredientRepository = ingredientRepository;
-        this.recipeRepository = recipeRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
-    
     @Override
     public void run(String... args) {
         initializeUsers();
