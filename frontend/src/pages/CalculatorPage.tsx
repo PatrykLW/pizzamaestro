@@ -2,9 +2,6 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Chart as ChartJS, ArcElement, Tooltip as ChartTooltip, Legend } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
 import jsPDF from 'jspdf';
-
-// Rejestracja komponentów Chart.js
-ChartJS.register(ArcElement, ChartTooltip, Legend);
 import {
   Box,
   Container,
@@ -65,6 +62,9 @@ import { useAuthStore } from '../store/authStore';
 import { IMAGES, PIZZA_STYLE_IMAGES } from '../constants/images';
 import { motion, AnimatePresence as FramerAnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
+
+// Rejestracja komponentów Chart.js
+ChartJS.register(ArcElement, ChartTooltip, Legend);
 
 // Wrapper to fix TypeScript compatibility issue with framer-motion
 const AnimatePresence = FramerAnimatePresence as React.FC<React.PropsWithChildren<{ mode?: 'wait' | 'sync' | 'popLayout'; initial?: boolean }>>;
@@ -740,18 +740,7 @@ Wygenerowano na pizzamaestro.pl`;
     }
   };
 
-  if (stylesLoading) {
-    return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
-        <CircularProgress size={60} />
-      </Box>
-    );
-  }
-
-  const selectedStyleData = styles?.find((s: any) => s.id === selectedStyle);
-  const isPremium = user?.accountType === 'PREMIUM' || user?.accountType === 'PRO';
-  
-  // Skalowane składniki
+  // Skalowane składniki (musi być przed early return)
   const scaledIngredients = useMemo(() => {
     if (!result || scaledPizzaCount === null || scaledPizzaCount === result.numberOfPizzas) {
       return null;
@@ -770,6 +759,17 @@ Wygenerowano na pizzamaestro.pl`;
       sugarGrams: Math.round(result.ingredients.sugarGrams * scale),
     };
   }, [result, scaledPizzaCount]);
+
+  if (stylesLoading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
+        <CircularProgress size={60} />
+      </Box>
+    );
+  }
+
+  const selectedStyleData = styles?.find((s: any) => s.id === selectedStyle);
+  const isPremium = user?.accountType === 'PREMIUM' || user?.accountType === 'PRO';
 
   return (
     <Box sx={{ bgcolor: 'grey.50', minHeight: '100vh', pb: 8 }}>
