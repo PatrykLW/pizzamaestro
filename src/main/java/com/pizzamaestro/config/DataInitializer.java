@@ -1,5 +1,6 @@
 package com.pizzamaestro.config;
 
+import com.pizzamaestro.constants.AppConstants;
 import com.pizzamaestro.model.Ingredient;
 import com.pizzamaestro.model.PizzaStyle;
 import com.pizzamaestro.model.Recipe;
@@ -13,6 +14,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -23,7 +26,6 @@ import java.util.Set;
  * Tworzy użytkowników testowych, składniki i przykładowe receptury.
  */
 @Component
-@RequiredArgsConstructor
 @Slf4j
 public class DataInitializer implements CommandLineRunner {
     
@@ -32,11 +34,47 @@ public class DataInitializer implements CommandLineRunner {
     private final RecipeRepository recipeRepository;
     private final PasswordEncoder passwordEncoder;
     
+    @Value("${app.test-users.admin-password:#{null}}")
+    private String adminPassword;
+    
+    @Value("${app.test-users.test-password:#{null}}")
+    private String testPassword;
+    
+    @Value("${app.test-users.premium-password:#{null}}")
+    private String premiumPassword;
+    
+    @Value("${app.test-users.pro-password:#{null}}")
+    private String proPassword;
+    
+    @Value("${app.test-users.user-password:#{null}}")
+    private String userPassword;
+    
+    public DataInitializer(UserRepository userRepository, 
+                          IngredientRepository ingredientRepository,
+                          RecipeRepository recipeRepository, 
+                          PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.ingredientRepository = ingredientRepository;
+        this.recipeRepository = recipeRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+    
     @Override
     public void run(String... args) {
         initializeUsers();
         initializeIngredients();
         initializeRecipes();
+    }
+    
+    /**
+     * Generuje bezpieczne hasło - używa zmiennej środowiskowej lub generuje losowe.
+     */
+    private String getSecurePassword(String envPassword, String fallbackPrefix) {
+        if (envPassword != null && !envPassword.isBlank()) {
+            return envPassword;
+        }
+        // Generuj losowe hasło jeśli nie podano w zmiennych środowiskowych
+        return fallbackPrefix + java.util.UUID.randomUUID().toString().substring(0, 8) + "!@#";
     }
     
     private void initializeUsers() {
@@ -50,7 +88,7 @@ public class DataInitializer implements CommandLineRunner {
         // ADMIN
         User admin = User.builder()
                 .email("admin@pizzamaestro.pl")
-                .password(passwordEncoder.encode("Admin123!@#"))
+                .password(passwordEncoder.encode(getSecurePassword(adminPassword, "Admin")))
                 .firstName("Admin")
                 .lastName("PizzaMaestro")
                 .phoneNumber("+48123456789")
@@ -61,8 +99,8 @@ public class DataInitializer implements CommandLineRunner {
                 .enabled(true)
                 .emailVerified(true)
                 .preferences(User.UserPreferences.builder()
-                        .language("pl")
-                        .theme("light")
+                        .language(AppConstants.DEFAULT_LANGUAGE)
+                        .theme(AppConstants.THEME_LIGHT)
                         .temperatureUnit(User.TemperatureUnit.CELSIUS)
                         .weightUnit(User.WeightUnit.GRAMS)
                         .emailNotifications(true)
@@ -84,7 +122,7 @@ public class DataInitializer implements CommandLineRunner {
         // USER FREE
         User testUser = User.builder()
                 .email("test@pizzamaestro.pl")
-                .password(passwordEncoder.encode("Test123!@#"))
+                .password(passwordEncoder.encode(getSecurePassword(testPassword, "Test")))
                 .firstName("Jan")
                 .lastName("Kowalski")
                 .phoneNumber("+48987654321")
@@ -94,8 +132,8 @@ public class DataInitializer implements CommandLineRunner {
                 .enabled(true)
                 .emailVerified(true)
                 .preferences(User.UserPreferences.builder()
-                        .language("pl")
-                        .theme("light")
+                        .language(AppConstants.DEFAULT_LANGUAGE)
+                        .theme(AppConstants.THEME_LIGHT)
                         .temperatureUnit(User.TemperatureUnit.CELSIUS)
                         .weightUnit(User.WeightUnit.GRAMS)
                         .emailNotifications(true)
@@ -117,7 +155,7 @@ public class DataInitializer implements CommandLineRunner {
         // USER PREMIUM
         User premiumUser = User.builder()
                 .email("premium@pizzamaestro.pl")
-                .password(passwordEncoder.encode("Premium123!@#"))
+                .password(passwordEncoder.encode(getSecurePassword(premiumPassword, "Premium")))
                 .firstName("Anna")
                 .lastName("Nowak")
                 .phoneNumber("+48555666777")
@@ -128,8 +166,8 @@ public class DataInitializer implements CommandLineRunner {
                 .enabled(true)
                 .emailVerified(true)
                 .preferences(User.UserPreferences.builder()
-                        .language("pl")
-                        .theme("dark")
+                        .language(AppConstants.DEFAULT_LANGUAGE)
+                        .theme(AppConstants.THEME_DARK)
                         .temperatureUnit(User.TemperatureUnit.CELSIUS)
                         .weightUnit(User.WeightUnit.GRAMS)
                         .emailNotifications(true)
@@ -151,7 +189,7 @@ public class DataInitializer implements CommandLineRunner {
         // USER PRO
         User proUser = User.builder()
                 .email("pro@pizzamaestro.pl")
-                .password(passwordEncoder.encode("Pro123!@#"))
+                .password(passwordEncoder.encode(getSecurePassword(proPassword, "Pro")))
                 .firstName("Marek")
                 .lastName("Wiśniewski")
                 .phoneNumber("+48111222333")
@@ -162,8 +200,8 @@ public class DataInitializer implements CommandLineRunner {
                 .enabled(true)
                 .emailVerified(true)
                 .preferences(User.UserPreferences.builder()
-                        .language("pl")
-                        .theme("dark")
+                        .language(AppConstants.DEFAULT_LANGUAGE)
+                        .theme(AppConstants.THEME_DARK)
                         .temperatureUnit(User.TemperatureUnit.CELSIUS)
                         .weightUnit(User.WeightUnit.GRAMS)
                         .emailNotifications(true)
@@ -185,7 +223,7 @@ public class DataInitializer implements CommandLineRunner {
         // USER do testów (simple)
         User user = User.builder()
                 .email("user@pizzamaestro.pl")
-                .password(passwordEncoder.encode("User123!@#"))
+                .password(passwordEncoder.encode(getSecurePassword(userPassword, "User")))
                 .firstName("Piotr")
                 .lastName("Zieliński")
                 .roles(Set.of(User.Role.ROLE_USER))
@@ -193,8 +231,8 @@ public class DataInitializer implements CommandLineRunner {
                 .enabled(true)
                 .emailVerified(true)
                 .preferences(User.UserPreferences.builder()
-                        .language("pl")
-                        .theme("light")
+                        .language(AppConstants.DEFAULT_LANGUAGE)
+                        .theme(AppConstants.THEME_LIGHT)
                         .temperatureUnit(User.TemperatureUnit.CELSIUS)
                         .weightUnit(User.WeightUnit.GRAMS)
                         .defaultPizzaStyle(PizzaStyle.NEAPOLITAN)
@@ -225,9 +263,22 @@ public class DataInitializer implements CommandLineRunner {
         
         log.info("Tworzenie rozbudowanej bazy składników...");
         
-        // ===============================================
-        // MĄKI - Profesjonalna baza z parametrami technicznymi
-        // ===============================================
+        List<Ingredient> flours = initializeFlours();
+        List<Ingredient> waters = initializeWaters();
+        List<Ingredient> yeasts = initializeYeasts();
+        List<Ingredient> salts = initializeSalts();
+        
+        log.info("Utworzono rozbudowaną bazę składników:");
+        log.info("  - {} mąk (włoskie, polskie, amerykańskie, europejskie)", flours.size());
+        log.info("  - {} wód (z parametrami twardości i mineralizacji)", waters.size());
+        log.info("  - {} drożdży (świeże, instant, zakwas)", yeasts.size());
+        log.info("  - {} soli (morskie, himalajska, koszerna)", salts.size());
+    }
+    
+    /**
+     * Inicjalizuje mąki w bazie danych.
+     */
+    private List<Ingredient> initializeFlours() {
         List<Ingredient> flours = Arrays.asList(
                 // --------------- WŁOSKIE MĄKI CAPUTO ---------------
                 createFlour("Caputo Pizzeria", "Caputo", "Włochy",
@@ -387,10 +438,13 @@ public class DataInitializer implements CommandLineRunner {
                         List.of(PizzaStyle.NEAPOLITAN, PizzaStyle.NEW_YORK))
         );
         ingredientRepository.saveAll(flours);
-        
-        // ===============================================
-        // WODY - Profesjonalna baza z parametrami
-        // ===============================================
+        return flours;
+    }
+    
+    /**
+     * Inicjalizuje wody w bazie danych.
+     */
+    private List<Ingredient> initializeWaters() {
         List<Ingredient> waters = Arrays.asList(
                 // --------------- POLSKIE WODY ---------------
                 createWater("Żywiec Zdrój", "Żywiec Zdrój", "Polska",
@@ -461,10 +515,13 @@ public class DataInitializer implements CommandLineRunner {
                         50.0, Ingredient.HardnessLevel.VERY_SOFT, 7.2, 65.0)
         );
         ingredientRepository.saveAll(waters);
-        
-        // ===============================================
-        // DROŻDŻE - Baza typów drożdży
-        // ===============================================
+        return waters;
+    }
+    
+    /**
+     * Inicjalizuje drożdże w bazie danych.
+     */
+    private List<Ingredient> initializeYeasts() {
         List<Ingredient> yeasts = Arrays.asList(
                 createYeast("Drożdże świeże piekarskie", "Lesaffre", "Francja",
                         "Klasyczne drożdże świeże (prasowane). Najbardziej aktywne, najlepszy smak. " +
@@ -498,10 +555,13 @@ public class DataInitializer implements CommandLineRunner {
                         Ingredient.YeastVariety.SOURDOUGH, 0.0, 0, true)
         );
         ingredientRepository.saveAll(yeasts);
-        
-        // ===============================================
-        // SOLE - Baza różnych soli
-        // ===============================================
+        return yeasts;
+    }
+    
+    /**
+     * Inicjalizuje sole w bazie danych.
+     */
+    private List<Ingredient> initializeSalts() {
         List<Ingredient> salts = Arrays.asList(
                 createSalt("Sól morska drobna", "Różni", "Różne",
                         "Standardowa drobna sól morska. Łatwo się rozpuszcza. Podstawowy wybór.",
@@ -532,12 +592,7 @@ public class DataInitializer implements CommandLineRunner {
                         Ingredient.SaltType.SEA_SALT, 38.5, false)
         );
         ingredientRepository.saveAll(salts);
-        
-        log.info("Utworzono rozbudowaną bazę składników:");
-        log.info("  - {} mąk (włoskie, polskie, amerykańskie, europejskie)", flours.size());
-        log.info("  - {} wód (z parametrami twardości i mineralizacji)", waters.size());
-        log.info("  - {} drożdży (świeże, instant, zakwas)", yeasts.size());
-        log.info("  - {} soli (morskie, himalajska, koszerna)", salts.size());
+        return salts;
     }
     
     // Helper dla mąki z pełnymi parametrami
@@ -555,7 +610,7 @@ public class DataInitializer implements CommandLineRunner {
                 .active(true)
                 .flourParameters(Ingredient.FlourParameters.builder()
                         .flourType(flourType)
-                        .grainType("pszenna")
+                        .grainType(AppConstants.GRAIN_WHEAT)
                         .proteinContent(protein)
                         .strength(strength)
                         .ashContent(ashContent)
@@ -623,7 +678,7 @@ public class DataInitializer implements CommandLineRunner {
                         .hardnessLevel(level)
                         .ph(ph)
                         .mineralContent(minerals)
-                        .source("butelkowana")
+                        .source(AppConstants.WATER_SOURCE_BOTTLED)
                         .build())
                 .build();
     }

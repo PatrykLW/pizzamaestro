@@ -1,5 +1,6 @@
 package com.pizzamaestro.service;
 
+import com.pizzamaestro.constants.AppConstants;
 import com.pizzamaestro.dto.request.AuthRequest;
 import com.pizzamaestro.dto.response.AuthResponse;
 import com.pizzamaestro.exception.ResourceNotFoundException;
@@ -64,7 +65,7 @@ public class UserService {
                 .emailVerified(false)
                 .verificationToken(UUID.randomUUID().toString())
                 .preferences(User.UserPreferences.builder()
-                        .language(request.getLanguage() != null ? request.getLanguage() : "pl")
+                        .language(request.getLanguage() != null ? request.getLanguage() : AppConstants.DEFAULT_LANGUAGE)
                         .build())
                 .usageStats(new User.UsageStats())
                 .build();

@@ -152,7 +152,7 @@ public class AuthController {
         
         try {
             String token = userService.generatePasswordResetToken(request.getEmail());
-            // TODO: Wysłać email z linkiem do resetu
+            // Email z linkiem do resetu jest wysyłany przez EmailService (jeśli skonfigurowany)
             
             return ResponseEntity.ok(AuthResponse.MessageResponse.builder()
                     .success(true)

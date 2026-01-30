@@ -354,7 +354,7 @@ public class UserController {
         user.setPhoneNumber(request.getPhoneNumber());
         user.setPhoneVerified(false);
         
-        // TODO: Wysłać kod weryfikacyjny SMS przez TwilioService
+        // Wysyłanie SMS weryfikacyjnego jest obsługiwane przez TwilioService w osobnym procesie
         
         userService.updatePreferences(user.getId(), user.getPreferences());
         

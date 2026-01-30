@@ -394,8 +394,8 @@ public class FlourMixSuggestionService {
             return tryTwoFlourMix(flours.get(0), flours.get(1), req, style);
         }
         
-        // Dla więcej mąk - użyj uproszczonego algorytmu
-        // TODO: Implementacja optymalizacji dla 3+ mąk
+        // Dla więcej mąk - użyj uproszczonego algorytmu z pierwszymi dwoma mąkami
+        // Pełna optymalizacja dla 3+ mąk wymaga algorytmu programowania liniowego
         return tryTwoFlourMix(flours.get(0), flours.get(1), req, style);
     }
     

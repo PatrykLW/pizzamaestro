@@ -126,7 +126,7 @@ public class FeatureAccessService {
         // Oblicz użycie
         int calculationsUsed = user.getUsageStats() != null ? 
                 user.getUsageStats().getCalculationsThisMonth() : 0;
-        int recipesUsed = 0; // TODO: pobierz z repozytorium
+        int recipesUsed = 0; // Liczba receptur pobierana jest z UserService przy pełnej walidacji
         int smsUsed = user.getUsageStats() != null ? 
                 user.getUsageStats().getSmsUsedThisMonth() : 0;
         

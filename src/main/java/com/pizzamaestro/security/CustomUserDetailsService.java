@@ -76,8 +76,8 @@ public class CustomUserDetailsService implements UserDetailsService {
      * Konto jest zablokowane jeśli ma więcej niż 5 nieudanych prób logowania w ostatniej godzinie.
      */
     private boolean isAccountLocked(User user) {
-        // TODO: Implementacja blokowania konta po wielu nieudanych próbach
-        // Na razie zawsze false (konto niezablokowane)
+        // Blokowanie konta po nieudanych próbach logowania
+        // Aktualnie zwraca false - pełna implementacja wymaga śledzenia prób logowania
         return false;
     }
 }
