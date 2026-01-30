@@ -1,5 +1,6 @@
 package com.pizzamaestro.service;
 
+import com.pizzamaestro.constants.CalculatorConstants;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -15,11 +16,6 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class EnvironmentalCorrectionService {
-    
-    // Stałe bazowe
-    private static final double BASE_HUMIDITY = 50.0; // % wilgotności powietrza
-    private static final int BASE_ALTITUDE = 0; // m npm
-    private static final double BASE_PRESSURE = 1013.25; // hPa na poziomie morza
     
     /**
      * Oblicza korekty środowiskowe dla receptury.
@@ -71,11 +67,12 @@ public class EnvironmentalCorrectionService {
      */
     private double calculateHydrationCorrection(double humidity) {
         // Korekta: +/- 0.5% hydratacji na każde 10% różnicy od bazowej wilgotności
-        double humidityDiff = humidity - BASE_HUMIDITY;
-        double correction = -humidityDiff * 0.05; // Odwrotna zależność
+        double humidityDiff = humidity - CalculatorConstants.BASE_HUMIDITY;
+        double correction = -humidityDiff * CalculatorConstants.HUMIDITY_CORRECTION_FACTOR;
         
         // Ogranicz do rozsądnego zakresu
-        return Math.max(-3.0, Math.min(3.0, correction));
+        return Math.max(CalculatorConstants.MIN_HYDRATION_CORRECTION, 
+                Math.min(CalculatorConstants.MAX_HYDRATION_CORRECTION, correction));
     }
     
     /**
@@ -85,16 +82,16 @@ public class EnvironmentalCorrectionService {
      * co przyspiesza fermentację - potrzeba mniej drożdży.
      */
     private double calculateYeastCorrectionForAltitude(int altitude) {
-        if (altitude <= 500) {
+        if (altitude <= CalculatorConstants.ALTITUDE_THRESHOLD_METERS) {
             return 0.0; // Bez korekty dla niskich wysokości
         }
         
         // Korekta: -5% drożdży na każde 1000m powyżej 500m
-        double altitudeAbove500 = altitude - 500;
-        double correction = -(altitudeAbove500 / 1000.0) * 5.0;
+        double altitudeAbove500 = altitude - CalculatorConstants.ALTITUDE_THRESHOLD_METERS;
+        double correction = -(altitudeAbove500 / 1000.0) * CalculatorConstants.YEAST_CORRECTION_PER_1000M;
         
         // Ogranicz do max -20%
-        return Math.max(-20.0, correction);
+        return Math.max(CalculatorConstants.MAX_YEAST_CORRECTION, correction);
     }
     
     /**
@@ -104,20 +101,18 @@ public class EnvironmentalCorrectionService {
         double correction = 0.0;
         
         // Korekta dla wysokości (szybsza fermentacja = krótszy czas)
-        if (altitude > 500) {
-            double altitudeAbove500 = altitude - 500;
-            correction -= (altitudeAbove500 / 1000.0) * 8.0; // -8% na 1000m
+        if (altitude > CalculatorConstants.ALTITUDE_THRESHOLD_METERS) {
+            double altitudeAbove500 = altitude - CalculatorConstants.ALTITUDE_THRESHOLD_METERS;
+            correction -= (altitudeAbove500 / 1000.0) * CalculatorConstants.FERMENTATION_CORRECTION_PER_1000M;
         }
         
         // Korekta dla temperatury
-        // Baza: 22°C
-        double tempDiff = roomTemp - 22.0;
-        // +1°C = -5% czasu fermentacji (szybciej)
-        // -1°C = +5% czasu fermentacji (wolniej)
-        correction -= tempDiff * 5.0;
+        double tempDiff = roomTemp - CalculatorConstants.DEFAULT_ROOM_TEMPERATURE;
+        correction -= tempDiff * CalculatorConstants.TEMP_CORRECTION_FACTOR;
         
         // Ogranicz do rozsądnego zakresu
-        return Math.max(-30.0, Math.min(50.0, correction));
+        return Math.max(CalculatorConstants.MIN_FERMENTATION_CORRECTION, 
+                Math.min(CalculatorConstants.MAX_FERMENTATION_CORRECTION, correction));
     }
     
     /**
@@ -126,7 +121,7 @@ public class EnvironmentalCorrectionService {
      */
     private double calculatePressureAtAltitude(int altitude) {
         // Uproszczony wzór: P = P0 * exp(-altitude/8500)
-        return BASE_PRESSURE * Math.exp(-altitude / 8500.0);
+        return CalculatorConstants.BASE_PRESSURE_HPA * Math.exp(-altitude / CalculatorConstants.BAROMETRIC_SCALE_HEIGHT);
     }
     
     /**
@@ -147,7 +142,7 @@ public class EnvironmentalCorrectionService {
         }
         
         // Rekomendacje dla wysokości
-        if (altitude > 1000) {
+        if (altitude > CalculatorConstants.ALTITUDE_THRESHOLD_METERS * 2) {
             recommendations.add("🏔️ Wysoka wysokość npm (" + altitude + "m) - " +
                     "fermentacja przebiega szybciej. Zmniejszono ilość drożdży i czas fermentacji.");
         } else if (altitude > 500) {
@@ -156,10 +151,10 @@ public class EnvironmentalCorrectionService {
         }
         
         // Rekomendacje dla temperatury
-        if (roomTemp > 28) {
+        if (roomTemp > CalculatorConstants.VERY_HIGH_TEMPERATURE_THRESHOLD) {
             recommendations.add("🌡️ Wysoka temperatura pokojowa (" + roomTemp + "°C) - " +
                     "fermentacja będzie szybka. Rozważ użycie lodówki lub mniej drożdży.");
-        } else if (roomTemp < 18) {
+        } else if (roomTemp < CalculatorConstants.LOW_TEMPERATURE_THRESHOLD) {
             recommendations.add("❄️ Niska temperatura pokojowa (" + roomTemp + "°C) - " +
                     "fermentacja będzie wolniejsza. Rozważ dłuższy czas lub cieplejsze miejsce.");
         }

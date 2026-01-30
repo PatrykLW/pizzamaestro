@@ -158,7 +158,7 @@ public class AuthController {
                     .success(true)
                     .message("Jeśli konto istnieje, link do resetu hasła został wysłany na podany adres email")
                     .build());
-        } catch (Exception e) {
+        } catch (Exception _) {
             // Nie zdradzaj czy konto istnieje
             return ResponseEntity.ok(AuthResponse.MessageResponse.builder()
                     .success(true)
