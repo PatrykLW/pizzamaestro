@@ -948,7 +948,7 @@ Wygenerowano na pizzamaestro.pl`;
                           <Chip
                             size="small"
                             icon={<ThermostatIcon />}
-                            label={`${style.recommendedOven.temperature}°C`}
+                            label={`${style.recommendedOven?.temperature ?? 450}°C`}
                             color="error"
                             variant="outlined"
                           />
