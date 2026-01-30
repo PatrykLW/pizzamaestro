@@ -1773,7 +1773,7 @@ Wygenerowano na pizzamaestro.pl`;
                             <TextField {...field} select label="Typ pieca" fullWidth>
                               {ovens?.map((oven: OvenType) => (
                                 <MenuItem key={oven.id} value={oven.id}>
-                                  {oven.name} ({oven.minTemperature}-{oven.maxTemperature}°C)
+                                  {oven.name} ({oven.temperatureMin}-{oven.temperatureMax}°C)
                                 </MenuItem>
                               ))}
                             </TextField>
