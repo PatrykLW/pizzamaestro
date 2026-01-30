@@ -13,9 +13,10 @@ FROM maven:3.9-eclipse-temurin-21 AS backend-build
 WORKDIR /app
 COPY pom.xml ./
 COPY src ./src
-# Kopiuj zbudowany frontend do resources
+# Kopiuj zbudowany frontend do resources (frontend już zbudowany w stage 1)
 COPY --from=frontend-build /app/frontend/build ./src/main/resources/static
-RUN mvn clean package -DskipTests
+# Pomiń budowanie frontendu w Maven - frontend już jest w static
+RUN mvn clean package -DskipTests -Dskip.frontend=true
 
 # Stage 3: Runtime
 FROM eclipse-temurin:21-jre-alpine
