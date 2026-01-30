@@ -50,6 +50,7 @@ import {
 } from '@mui/icons-material';
 import { useAuthStore } from '../store/authStore';
 import { userApi, ingredientsApi, calculatorApi, UpdateEquipmentRequest, UpdateEnvironmentRequest, UpdateNotificationsRequest } from '../services/api';
+import type { OvenType, Ingredient } from '../types';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 
@@ -392,7 +393,7 @@ const ProfilePage: React.FC = () => {
                     <MenuItem value="">
                       <em>Nie ustawiono</em>
                     </MenuItem>
-                    {ovens?.map((oven: any) => (
+                    {ovens?.map((oven: OvenType) => (
                       <MenuItem key={oven.id} value={oven.id}>
                         {oven.name}
                       </MenuItem>
@@ -467,7 +468,7 @@ const ProfilePage: React.FC = () => {
                     <MenuItem value="">
                       <em>Nie ustawiono</em>
                     </MenuItem>
-                    {waters?.map((water: any) => (
+                    {waters?.map((water: Ingredient) => (
                       <MenuItem key={water.id} value={water.id}>
                         {water.name}
                       </MenuItem>
@@ -482,12 +483,12 @@ const ProfilePage: React.FC = () => {
                   multiple
                   disabled={!editingEquipment}
                   options={flours || []}
-                  getOptionLabel={(option: any) => option.name || option}
-                  value={flours?.filter((f: any) => equipmentForm.availableFlourIds?.includes(f.id)) || []}
+                  getOptionLabel={(option: Ingredient) => option.name || ''}
+                  value={flours?.filter((f: Ingredient) => equipmentForm.availableFlourIds?.includes(f.id)) || []}
                   onChange={(_, newValue) => {
                     setEquipmentForm({
                       ...equipmentForm,
-                      availableFlourIds: newValue.map((v: any) => v.id),
+                      availableFlourIds: newValue.map((v: Ingredient) => v.id),
                     });
                   }}
                   renderInput={(params) => (
@@ -498,13 +499,13 @@ const ProfilePage: React.FC = () => {
                       helperText="Kalkulator będzie sugerował przepisy na podstawie Twoich mąk"
                     />
                   )}
-                  renderOption={(props, option: any, { selected }) => (
+                  renderOption={(props, option: Ingredient, { selected }) => (
                     <li {...props}>
                       <Checkbox checked={selected} sx={{ mr: 1 }} />
                       <Box>
                         <Typography>{option.name}</Typography>
                         <Typography variant="caption" color="text.secondary">
-                          W: {option.strength}, Białko: {option.proteinContent}%
+                          W: {option.flourParameters?.strength}, Białko: {option.flourParameters?.proteinContent}%
                         </Typography>
                       </Box>
                     </li>
@@ -639,6 +640,7 @@ const ProfilePage: React.FC = () => {
                           onClick={handleGetLocation}
                           disabled={!editingEnvironment}
                           color="primary"
+                          aria-label="Pobierz moją lokalizację GPS"
                         >
                           <Place />
                         </IconButton>

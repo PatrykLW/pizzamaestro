@@ -1,5 +1,7 @@
 version: '3.8'
 
+# IMPORTANT: Copy .env.example to .env and set secure values before running!
+
 services:
   # MongoDB Database
   mongodb:
@@ -7,11 +9,11 @@ services:
     container_name: pizzamaestro-mongodb
     restart: unless-stopped
     ports:
-      - "27017:27017"
+      - "127.0.0.1:27017:27017"
     environment:
-      MONGO_INITDB_ROOT_USERNAME: pizzamaestro
-      MONGO_INITDB_ROOT_PASSWORD: PizzaMaestro2024!
-      MONGO_INITDB_DATABASE: pizzamaestro
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_DATABASE:-pizzamaestro}
     volumes:
       - mongodb_data:/data/db
       - ./docker/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
@@ -23,19 +25,21 @@ services:
       timeout: 5s
       retries: 5
 
-  # MongoDB Express - GUI do zarządzania bazą (opcjonalne)
+  # MongoDB Express - GUI do zarządzania bazą (opcjonalne, tylko dev)
   mongo-express:
     image: mongo-express:latest
     container_name: pizzamaestro-mongo-express
     restart: unless-stopped
+    profiles:
+      - dev
     ports:
-      - "8081:8081"
+      - "127.0.0.1:8081:8081"
     environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: pizzamaestro
-      ME_CONFIG_MONGODB_ADMINPASSWORD: PizzaMaestro2024!
-      ME_CONFIG_MONGODB_URL: mongodb://pizzamaestro:PizzaMaestro2024!@mongodb:27017/
-      ME_CONFIG_BASICAUTH_USERNAME: admin
-      ME_CONFIG_BASICAUTH_PASSWORD: admin123
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_ROOT_USERNAME}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_ROOT_PASSWORD}
+      ME_CONFIG_MONGODB_URL: mongodb://${MONGO_ROOT_USERNAME}:${MONGO_ROOT_PASSWORD}@mongodb:27017/
+      ME_CONFIG_BASICAUTH_USERNAME: ${ME_BASICAUTH_USERNAME:-admin}
+      ME_CONFIG_BASICAUTH_PASSWORD: ${ME_BASICAUTH_PASSWORD}
     networks:
       - pizzamaestro-network
     depends_on:
@@ -53,8 +57,8 @@ services:
       - "8080:8080"
     environment:
       SPRING_PROFILES_ACTIVE: docker
-      MONGODB_URI: mongodb://pizzamaestro:PizzaMaestro2024!@mongodb:27017/pizzamaestro?authSource=admin
-      JWT_SECRET: cGl6emFNYWVzdHJvU3VwZXJTZWNyZXRLZXkyMDI0Rm9yUHJvZHVjdGlvblVzZU9ubHk=
+      MONGODB_URI: mongodb://${MONGO_ROOT_USERNAME}:${MONGO_ROOT_PASSWORD}@mongodb:27017/${MONGO_DATABASE:-pizzamaestro}?authSource=admin
+      JWT_SECRET: ${JWT_SECRET}
     networks:
       - pizzamaestro-network
     depends_on:

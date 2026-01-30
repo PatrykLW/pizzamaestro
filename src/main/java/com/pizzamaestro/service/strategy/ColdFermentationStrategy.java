@@ -1,5 +1,6 @@
 package com.pizzamaestro.service.strategy;
 
+import com.pizzamaestro.constants.CalculatorConstants;
 import com.pizzamaestro.model.Recipe;
 import org.springframework.stereotype.Component;
 
@@ -17,11 +18,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class ColdFermentationStrategy implements FermentationStrategy {
     
-    // Bazowy procent drożdży dla 24h fermentacji w lodówce
-    private static final double BASE_YEAST_PERCENTAGE = 0.15;
-    private static final double BASE_COLD_HOURS = 24.0;
-    private static final double COLD_ACTIVITY_FACTOR = 0.1; // 10% aktywności w lodówce
-    
     @Override
     public double calculateYeastPercentage(
             int totalFermentationHours,
@@ -30,34 +26,35 @@ public class ColdFermentationStrategy implements FermentationStrategy {
             Recipe.FermentationMethod method) {
         
         // Zakładamy 2-4h w temp. pokojowej przed lodówką
-        int roomHours = Math.min(4, totalFermentationHours / 6);
-        int coldHours = totalFermentationHours - roomHours - 2; // 2h po wyjęciu
+        int roomHours = Math.min(CalculatorConstants.MAX_ROOM_HOURS_BEFORE_COLD, 
+                totalFermentationHours / CalculatorConstants.ROOM_HOURS_DIVISOR);
+        int coldHours = totalFermentationHours - roomHours - CalculatorConstants.POST_COLD_REST_HOURS;
         
         // Przelicz godziny w lodówce na ekwiwalent godzin w temp. pokojowej
-        // Aktywność w lodówce (4°C) to ok. 10% aktywności w 24°C
         double coldActivityFactor = calculateColdActivityFactor(fridgeTemperature);
-        double equivalentHours = roomHours + (coldHours * coldActivityFactor) + 2;
+        double equivalentHours = roomHours + (coldHours * coldActivityFactor) + CalculatorConstants.POST_COLD_REST_HOURS;
         
         // Współczynnik czasu
-        double timeFactor = BASE_COLD_HOURS / equivalentHours;
+        double timeFactor = CalculatorConstants.COLD_BASE_HOURS / equivalentHours;
         
         // Współczynnik temperatury pokojowej (wpływa na początkową fazę)
-        double tempDiff = roomTemperature - 24.0;
-        double tempFactor = Math.pow(2, tempDiff / 10.0);
+        double tempDiff = roomTemperature - CalculatorConstants.REFERENCE_ROOM_TEMP;
+        double tempFactor = Math.pow(CalculatorConstants.Q10_FACTOR, tempDiff / CalculatorConstants.TEMP_BASE_DIFF);
         
         // Oblicz procent drożdży
-        double yeastPercentage = BASE_YEAST_PERCENTAGE * timeFactor * Math.sqrt(tempFactor);
+        double yeastPercentage = CalculatorConstants.COLD_BASE_YEAST_PERCENTAGE * timeFactor * Math.sqrt(tempFactor);
         
         // Dla bardzo długich fermentacji (>48h) zmniejsz jeszcze
-        if (totalFermentationHours > 48) {
-            yeastPercentage *= 0.7;
+        if (totalFermentationHours > CalculatorConstants.LONG_FERMENTATION_HOURS) {
+            yeastPercentage *= CalculatorConstants.LONG_COLD_FERMENTATION_FACTOR;
         }
-        if (totalFermentationHours > 72) {
-            yeastPercentage *= 0.8;
+        if (totalFermentationHours > CalculatorConstants.VERY_LONG_FERMENTATION_HOURS) {
+            yeastPercentage *= CalculatorConstants.VERY_LONG_COLD_FERMENTATION_FACTOR;
         }
         
         // Ogranicz do rozsądnych wartości
-        return Math.max(0.02, Math.min(0.5, yeastPercentage));
+        return Math.max(CalculatorConstants.MIN_YEAST_PERCENTAGE, 
+                Math.min(CalculatorConstants.MAX_YEAST_PERCENTAGE, yeastPercentage));
     }
     
     /**
@@ -67,7 +64,7 @@ public class ColdFermentationStrategy implements FermentationStrategy {
         // W 4°C aktywność to ok. 10%
         // W 0°C aktywność to ok. 5%
         // W 8°C aktywność to ok. 20%
-        return 0.05 + (fridgeTemp * 0.025);
+        return CalculatorConstants.COLD_ACTIVITY_BASE + (fridgeTemp * CalculatorConstants.COLD_ACTIVITY_MULTIPLIER);
     }
     
     @Override

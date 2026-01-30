@@ -254,7 +254,7 @@ const CalculatorPage: React.FC = () => {
             
             toast.success(`Pogoda dla ${weatherData.cityName || 'Twojej lokalizacji'} załadowana`);
           } catch (error) {
-            console.error('Błąd pobierania pogody:', error);
+            logger.error('Błąd pobierania pogody:', error);
             toast.error('Nie udało się pobrać pogody');
           } finally {
             setLoadingWeather(false);
@@ -305,7 +305,7 @@ const CalculatorPage: React.FC = () => {
       
       toast.success(`Pogoda dla ${weatherData.cityName || 'Twojej lokalizacji'} załadowana`);
     } catch (error) {
-      console.error('Błąd pobierania pogody:', error);
+      logger.error('Błąd pobierania pogody:', error);
       toast.error('Nie udało się pobrać pogody');
     } finally {
       setLoadingWeather(false);
@@ -385,7 +385,7 @@ const CalculatorPage: React.FC = () => {
           );
           setWeatherAdjustment(adjustment);
         } catch (e) {
-          console.warn('Nie udało się pobrać pogody z domyślnej lokalizacji');
+          logger.warn('Nie udało się pobrać pogody z domyślnej lokalizacji');
         }
       }
 
@@ -431,7 +431,7 @@ const CalculatorPage: React.FC = () => {
         toast.success(suggestion.message);
       }
     } catch (error) {
-      console.error('Błąd pobierania sugestii miksu:', error);
+      logger.error('Błąd pobierania sugestii miksu:', error);
       toast.error('Nie udało się pobrać sugestii miksu');
     } finally {
       setLoadingMixSuggestion(false);
@@ -1201,7 +1201,7 @@ Wygenerowano na pizzamaestro.pl`;
                                       helperText="Wybierz mąkę lub zostaw puste dla domyślnej"
                                     />
                                   )}
-                                  renderOption={(props, option: any) => (
+                                  renderOption={(props, option: Ingredient) => (
                                     <li {...props}>
                                       <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                                         <Typography variant="body1">
@@ -1552,7 +1552,7 @@ Wygenerowano na pizzamaestro.pl`;
                           control={control}
                           render={({ field }) => (
                             <TextField {...field} select label="Metoda fermentacji" fullWidth>
-                              {fermentationMethods?.map((method: any) => (
+                              {fermentationMethods?.map((method: FermentationMethod) => (
                                 <MenuItem key={method.id} value={method.id}>
                                   {method.name}
                                 </MenuItem>
@@ -1920,17 +1920,17 @@ Wygenerowano na pizzamaestro.pl`;
                   </Box>
                   <Box sx={{ display: 'flex', gap: 1 }}>
                     <Tooltip title="Kopiuj do schowka">
-                      <IconButton onClick={copyToClipboard} sx={{ bgcolor: 'rgba(255,255,255,0.2)', color: 'white' }}>
+                      <IconButton onClick={copyToClipboard} sx={{ bgcolor: 'rgba(255,255,255,0.2)', color: 'white' }} aria-label="Kopiuj przepis do schowka">
                         <CopyIcon />
                       </IconButton>
                     </Tooltip>
                     <Tooltip title="Udostępnij link">
-                      <IconButton onClick={shareRecipe} sx={{ bgcolor: 'rgba(255,255,255,0.2)', color: 'white' }}>
+                      <IconButton onClick={shareRecipe} sx={{ bgcolor: 'rgba(255,255,255,0.2)', color: 'white' }} aria-label="Udostępnij link do przepisu">
                         <ShareIcon />
                       </IconButton>
                     </Tooltip>
                     <Tooltip title="Eksportuj do PDF">
-                      <IconButton onClick={exportToPDF} sx={{ bgcolor: 'rgba(255,255,255,0.2)', color: 'white' }}>
+                      <IconButton onClick={exportToPDF} sx={{ bgcolor: 'rgba(255,255,255,0.2)', color: 'white' }} aria-label="Eksportuj przepis do PDF">
                         <PrintIcon />
                       </IconButton>
                     </Tooltip>
@@ -1958,6 +1958,7 @@ Wygenerowano na pizzamaestro.pl`;
                             onClick={() => setScaledPizzaCount(prev => 
                               Math.max(1, (prev ?? result.numberOfPizzas) - 1)
                             )}
+                            aria-label="Zmniejsz liczbę pizz"
                           >
                             <ExpandMoreIcon sx={{ transform: 'rotate(90deg)' }} />
                           </IconButton>
@@ -1971,6 +1972,7 @@ Wygenerowano na pizzamaestro.pl`;
                             onClick={() => setScaledPizzaCount(prev => 
                               Math.min(50, (prev ?? result.numberOfPizzas) + 1)
                             )}
+                            aria-label="Zwiększ liczbę pizz"
                           >
                             <ExpandMoreIcon sx={{ transform: 'rotate(-90deg)' }} />
                           </IconButton>

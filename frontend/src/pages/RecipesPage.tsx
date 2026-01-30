@@ -122,6 +122,7 @@ const RecipesPage: React.FC = () => {
                     <IconButton
                       size="small"
                       onClick={() => toggleFavoriteMutation.mutate(recipe.id)}
+                      aria-label={recipe.isFavorite ? 'Usuń z ulubionych' : 'Dodaj do ulubionych'}
                     >
                       {recipe.isFavorite ? (
                         <Favorite color="error" />
@@ -171,7 +172,7 @@ const RecipesPage: React.FC = () => {
                     <IconButton
                       size="small"
                       onClick={() => cloneMutation.mutate(recipe.id)}
-                      title="Kopiuj"
+                      aria-label="Kopiuj recepturę"
                     >
                       <ContentCopy fontSize="small" />
                     </IconButton>
@@ -183,7 +184,7 @@ const RecipesPage: React.FC = () => {
                           deleteMutation.mutate(recipe.id);
                         }
                       }}
-                      title="Usuń"
+                      aria-label="Usuń recepturę"
                     >
                       <Delete fontSize="small" />
                     </IconButton>

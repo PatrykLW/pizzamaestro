@@ -130,6 +130,7 @@ const LoginPage: React.FC = () => {
                     <IconButton
                       onClick={() => setShowPassword(!showPassword)}
                       edge="end"
+                      aria-label={showPassword ? 'Ukryj hasło' : 'Pokaż hasło'}
                     >
                       {showPassword ? <VisibilityOff /> : <Visibility />}
                     </IconButton>

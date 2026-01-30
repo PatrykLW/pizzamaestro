@@ -227,7 +227,9 @@ const ActivePizzaPage: React.FC = () => {
     }
   };
 
-  const getStepColor = (step: ScheduledStepResponse) => {
+  type ChipColor = 'default' | 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning';
+  
+  const getStepColor = (step: ScheduledStepResponse): ChipColor => {
     const status = getStepStatus(step);
     if (status === 'completed') return 'success';
     if (status === 'active') return 'primary';
@@ -311,6 +313,7 @@ const ActivePizzaPage: React.FC = () => {
                     <IconButton 
                       size="small"
                       onClick={() => rescheduleMutation.mutate({ id: activePizza.id, minutes: -30 })}
+                      aria-label="Przesuń harmonogram o 30 minut wcześniej"
                     >
                       <Remove />
                     </IconButton>
@@ -324,6 +327,7 @@ const ActivePizzaPage: React.FC = () => {
                     <IconButton 
                       size="small"
                       onClick={() => rescheduleMutation.mutate({ id: activePizza.id, minutes: 30 })}
+                      aria-label="Przesuń harmonogram o 30 minut później"
                     >
                       <Add />
                     </IconButton>
@@ -349,7 +353,7 @@ const ActivePizzaPage: React.FC = () => {
                             <Chip 
                               label={getTimeDisplay(step)}
                               size="small"
-                              color={color as any}
+                              color={color}
                               variant={status === 'active' ? 'filled' : 'outlined'}
                             />
                           </Box>

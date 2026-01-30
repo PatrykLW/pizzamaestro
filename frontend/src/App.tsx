@@ -4,6 +4,7 @@ import { Box, CircularProgress } from '@mui/material';
 import { Layout } from './components/Layout/Layout';
 import { ProtectedRoute } from './components/Auth/ProtectedRoute';
 import { useAuthStore } from './store/authStore';
+import ErrorBoundary from './components/ErrorBoundary';
 
 // Lazy loading stron
 const HomePage = lazy(() => import('./pages/HomePage'));
@@ -35,9 +36,10 @@ function App() {
   const { isAuthenticated } = useAuthStore();
 
   return (
-    <Layout>
-      <Suspense fallback={<PageLoader />}>
-        <Routes>
+    <ErrorBoundary>
+      <Layout>
+        <Suspense fallback={<PageLoader />}>
+          <Routes>
           {/* Publiczne strony */}
           <Route path="/" element={<HomePage />} />
           <Route path="/calculator" element={<CalculatorPage />} />
@@ -92,8 +94,9 @@ function App() {
           {/* 404 */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
-      </Suspense>
-    </Layout>
+        </Suspense>
+      </Layout>
+    </ErrorBoundary>
   );
 }
 

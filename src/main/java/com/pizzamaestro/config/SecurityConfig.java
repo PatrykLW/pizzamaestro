@@ -153,7 +153,8 @@ public class SecurityConfig {
     
     @Bean
     public PasswordEncoder passwordEncoder() {
-        log.debug("🔒 Tworzenie BCryptPasswordEncoder (strength=12)...");
-        return new BCryptPasswordEncoder(12);
+        log.debug("🔒 Tworzenie BCryptPasswordEncoder (strength={})...", 
+                com.pizzamaestro.constants.CalculatorConstants.BCRYPT_STRENGTH);
+        return new BCryptPasswordEncoder(com.pizzamaestro.constants.CalculatorConstants.BCRYPT_STRENGTH);
     }
 }

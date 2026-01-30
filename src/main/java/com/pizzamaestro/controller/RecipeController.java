@@ -4,7 +4,6 @@ import com.pizzamaestro.dto.request.RecipeUpdateRequest;
 import com.pizzamaestro.model.Recipe;
 import com.pizzamaestro.service.PdfExportService;
 import com.pizzamaestro.service.RecipeService;
-import com.pizzamaestro.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -18,7 +17,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
+import com.pizzamaestro.security.UserPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,7 +34,6 @@ import java.util.List;
 public class RecipeController {
     
     private final RecipeService recipeService;
-    private final UserService userService;
     private final PdfExportService pdfExportService;
     
     /**
@@ -44,10 +42,10 @@ public class RecipeController {
     @GetMapping
     @Operation(summary = "Lista receptur użytkownika")
     public ResponseEntity<Page<Recipe>> getRecipes(
-            @AuthenticationPrincipal UserDetails userDetails,
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
             @PageableDefault(size = 20) Pageable pageable) {
         
-        String userId = getUserId(userDetails);
+        String userId = userPrincipal.getUserId();
         Page<Recipe> recipes = recipeService.findByUserId(userId, pageable);
         return ResponseEntity.ok(recipes);
     }
@@ -58,9 +56,9 @@ public class RecipeController {
     @GetMapping("/favorites")
     @Operation(summary = "Ulubione receptury")
     public ResponseEntity<List<Recipe>> getFavorites(
-            @AuthenticationPrincipal UserDetails userDetails) {
+            @AuthenticationPrincipal UserPrincipal userPrincipal) {
         
-        String userId = getUserId(userDetails);
+        String userId = userPrincipal.getUserId();
         List<Recipe> favorites = recipeService.findFavorites(userId);
         return ResponseEntity.ok(favorites);
     }
@@ -72,9 +70,9 @@ public class RecipeController {
     @Operation(summary = "Szczegóły receptury")
     public ResponseEntity<Recipe> getRecipe(
             @PathVariable String id,
-            @AuthenticationPrincipal UserDetails userDetails) {
+            @AuthenticationPrincipal UserPrincipal userPrincipal) {
         
-        String userId = getUserId(userDetails);
+        String userId = userPrincipal.getUserId();
         Recipe recipe = recipeService.findByIdAndUserId(id, userId);
         return ResponseEntity.ok(recipe);
     }
@@ -87,9 +85,9 @@ public class RecipeController {
     public ResponseEntity<Recipe> updateRecipe(
             @PathVariable String id,
             @Valid @RequestBody RecipeUpdateRequest updates,
-            @AuthenticationPrincipal UserDetails userDetails) {
+            @AuthenticationPrincipal UserPrincipal userPrincipal) {
         
-        String userId = getUserId(userDetails);
+        String userId = userPrincipal.getUserId();
         Recipe updated = recipeService.update(id, userId, updates);
         return ResponseEntity.ok(updated);
     }
@@ -101,9 +99,9 @@ public class RecipeController {
     @Operation(summary = "Dodaj/usuń z ulubionych")
     public ResponseEntity<Recipe> toggleFavorite(
             @PathVariable String id,
-            @AuthenticationPrincipal UserDetails userDetails) {
+            @AuthenticationPrincipal UserPrincipal userPrincipal) {
         
-        String userId = getUserId(userDetails);
+        String userId = userPrincipal.getUserId();
         Recipe recipe = recipeService.toggleFavorite(id, userId);
         return ResponseEntity.ok(recipe);
     }
@@ -115,9 +113,9 @@ public class RecipeController {
     @Operation(summary = "Kopiuj recepturę")
     public ResponseEntity<Recipe> cloneRecipe(
             @PathVariable String id,
-            @AuthenticationPrincipal UserDetails userDetails) {
+            @AuthenticationPrincipal UserPrincipal userPrincipal) {
         
-        String userId = getUserId(userDetails);
+        String userId = userPrincipal.getUserId();
         Recipe clone = recipeService.clone(id, userId);
         return ResponseEntity.ok(clone);
     }
@@ -130,9 +128,9 @@ public class RecipeController {
     public ResponseEntity<Recipe> completeStep(
             @PathVariable String id,
             @PathVariable int stepNumber,
-            @AuthenticationPrincipal UserDetails userDetails) {
+            @AuthenticationPrincipal UserPrincipal userPrincipal) {
         
-        String userId = getUserId(userDetails);
+        String userId = userPrincipal.getUserId();
         Recipe recipe = recipeService.completeStep(id, userId, stepNumber);
         return ResponseEntity.ok(recipe);
     }
@@ -144,9 +142,9 @@ public class RecipeController {
     @Operation(summary = "Usuń recepturę")
     public ResponseEntity<Void> deleteRecipe(
             @PathVariable String id,
-            @AuthenticationPrincipal UserDetails userDetails) {
+            @AuthenticationPrincipal UserPrincipal userPrincipal) {
         
-        String userId = getUserId(userDetails);
+        String userId = userPrincipal.getUserId();
         recipeService.delete(id, userId);
         return ResponseEntity.noContent().build();
     }
@@ -170,11 +168,11 @@ public class RecipeController {
     @Operation(summary = "Eksportuj przepis do PDF")
     public ResponseEntity<byte[]> exportToPdf(
             @PathVariable String id,
-            @AuthenticationPrincipal UserDetails userDetails) {
+            @AuthenticationPrincipal UserPrincipal userPrincipal) {
         
         log.info("📄 Eksport przepisu {} do PDF", id);
         
-        String userId = getUserId(userDetails);
+        String userId = userPrincipal.getUserId();
         Recipe recipe = recipeService.findByIdAndUserId(id, userId);
         
         try {
@@ -201,11 +199,11 @@ public class RecipeController {
     @Operation(summary = "Wygeneruj link do udostępniania przepisu")
     public ResponseEntity<ShareResponse> shareRecipe(
             @PathVariable String id,
-            @AuthenticationPrincipal UserDetails userDetails) {
+            @AuthenticationPrincipal UserPrincipal userPrincipal) {
         
         log.info("📤 Generowanie linku do udostępniania przepisu: {}", id);
         
-        String userId = getUserId(userDetails);
+        String userId = userPrincipal.getUserId();
         String token = recipeService.generateShareLink(id, userId);
         
         // Zwróć URL do udostępniania
@@ -221,11 +219,11 @@ public class RecipeController {
     @Operation(summary = "Anuluj udostępnianie przepisu")
     public ResponseEntity<Void> revokeShare(
             @PathVariable String id,
-            @AuthenticationPrincipal UserDetails userDetails) {
+            @AuthenticationPrincipal UserPrincipal userPrincipal) {
         
         log.info("🔒 Anulowanie udostępniania przepisu: {}", id);
         
-        String userId = getUserId(userDetails);
+        String userId = userPrincipal.getUserId();
         recipeService.revokeShareLink(id, userId);
         
         return ResponseEntity.noContent().build();
@@ -245,8 +243,4 @@ public class RecipeController {
     
     // DTO dla odpowiedzi share
     public record ShareResponse(String token, String shareUrl) {}
-    
-    private String getUserId(UserDetails userDetails) {
-        return userService.findByEmail(userDetails.getUsername()).getId();
-    }
 }

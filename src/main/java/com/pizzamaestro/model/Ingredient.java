@@ -2,6 +2,7 @@ package com.pizzamaestro.model;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
@@ -19,6 +20,9 @@ public class Ingredient {
     
     @Id
     private String id;
+    
+    @Version
+    private Long version;
     
     private IngredientType type;
     

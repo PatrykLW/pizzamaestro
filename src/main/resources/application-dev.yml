@@ -1,13 +1,14 @@
 # Profil deweloperski - lokalny development
+# IMPORTANT: Set environment variables or use .env file
 spring:
   data:
     mongodb:
-      uri: mongodb://pizzamaestro:PizzaMaestro2024!@localhost:27017/pizzamaestro?authSource=admin
+      uri: ${MONGODB_URI:mongodb://localhost:27017/pizzamaestro}
       auto-index-creation: true
 
-# JWT - klucz deweloperski (NIE UŻYWAĆ NA PRODUKCJI!)
+# JWT - MUST be set via environment variable
 jwt:
-  secret: cGl6emFNYWVzdHJvRGV2ZWxvcG1lbnRTZWNyZXRLZXlGb3JEZXZNT05MWTEyMzQ1Njc4OTA=
+  secret: ${JWT_SECRET}
   expiration: 86400000
   refresh-expiration: 604800000
 
@@ -57,3 +58,10 @@ logging:
 # Debug mode
 debug: false
 trace: false
+
+# Enable Swagger UI in development
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true

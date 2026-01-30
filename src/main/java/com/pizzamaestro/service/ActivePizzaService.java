@@ -108,6 +108,7 @@ public class ActivePizzaService {
     /**
      * Pobiera aktywną pizzę użytkownika.
      */
+    @Transactional(readOnly = true)
     public Optional<ActivePizza> getActiveByUserId(String userId) {
         return activePizzaRepository.findActiveByUserId(userId);
     }
@@ -115,6 +116,7 @@ public class ActivePizzaService {
     /**
      * Pobiera aktywną pizzę po ID.
      */
+    @Transactional(readOnly = true)
     public ActivePizza getById(String id) {
         return activePizzaRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Aktywna pizza nie znaleziona"));
@@ -123,6 +125,7 @@ public class ActivePizzaService {
     /**
      * Pobiera historię pizz użytkownika.
      */
+    @Transactional(readOnly = true)
     public List<ActivePizza> getHistoryByUserId(String userId) {
         return activePizzaRepository.findByUserIdOrderByCreatedAtDesc(userId);
     }

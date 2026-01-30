@@ -58,7 +58,9 @@ public class CustomUserDetailsService implements UserDetailsService {
         
         log.debug("✓ Załadowano użytkownika: {}, role: {}", email, user.getRoles());
         
-        return new org.springframework.security.core.userdetails.User(
+        // Return UserPrincipal with userId to avoid N+1 query in controllers
+        return new UserPrincipal(
+                user.getId(),
                 user.getEmail(),
                 user.getPassword(),
                 user.isEnabled(),

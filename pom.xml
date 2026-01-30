@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>4.0.2</version>
+        <version>3.4.1</version>
         <relativePath/>
     </parent>
     
@@ -24,7 +24,8 @@
         <node.version>v20.18.0</node.version>
         <npm.version>10.2.3</npm.version>
         <frontend-maven-plugin.version>2.0.0</frontend-maven-plugin.version>
-        <jjwt.version>0.13.0</jjwt.version>
+        <jjwt.version>0.12.6</jjwt.version>
+        <lombok.version>1.18.30</lombok.version>
         <!-- Domyślnie buduj frontend, w Docker pomiń (frontend budowany osobno) -->
         <skip.frontend>false</skip.frontend>
     </properties>
@@ -284,7 +285,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <argLine>${argLine}</argLine>
-                    <testFailureIgnore>true</testFailureIgnore>
+                    <testFailureIgnore>false</testFailureIgnore>
                 </configuration>
             </plugin>
         </plugins>

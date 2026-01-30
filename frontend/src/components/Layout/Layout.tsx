@@ -142,6 +142,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                 size="large"
                 onClick={() => setMobileOpen(true)}
                 sx={{ mr: 2 }}
+                aria-label="Otwórz menu nawigacji"
               >
                 <MenuIcon />
               </IconButton>
@@ -216,7 +217,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
             {isAuthenticated ? (
               <Box sx={{ flexGrow: 0 }}>
                 <Tooltip title="Otwórz menu">
-                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }} aria-label="Otwórz menu użytkownika">
                     <Avatar 
                       sx={{ bgcolor: 'primary.main' }}
                     >

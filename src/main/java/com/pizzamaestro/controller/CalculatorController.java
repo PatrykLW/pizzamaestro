@@ -20,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
+import com.pizzamaestro.security.UserPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
@@ -101,9 +101,9 @@ public class CalculatorController {
                security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<CalculationResponse> calculate(
             @Valid @RequestBody CalculationRequest request,
-            @AuthenticationPrincipal UserDetails userDetails) {
+            @AuthenticationPrincipal UserPrincipal userPrincipal) {
         
-        String userId = getUserId(userDetails);
+        String userId = userPrincipal.getUserId();
         log.info("Kalkulacja dla użytkownika {}: {} pizz, styl: {}", 
                 userId, request.getNumberOfPizzas(), request.getPizzaStyle());
         
@@ -308,9 +308,9 @@ public class CalculatorController {
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<FlourMixSuggestionService.FlourMixSuggestion> suggestFlourMix(
             @RequestParam PizzaStyle style,
-            @AuthenticationPrincipal UserDetails userDetails) {
+            @AuthenticationPrincipal UserPrincipal userPrincipal) {
         
-        String userId = getUserId(userDetails);
+        String userId = userPrincipal.getUserId();
         var user = userService.findById(userId);
         List<String> availableFlourIds = user.getPreferences() != null ? 
                 user.getPreferences().getAvailableFlourIds() : null;
@@ -398,7 +398,4 @@ public class CalculatorController {
         return ResponseEntity.ok(corrections);
     }
     
-    private String getUserId(UserDetails userDetails) {
-        return userService.findByEmail(userDetails.getUsername()).getId();
-    }
 }

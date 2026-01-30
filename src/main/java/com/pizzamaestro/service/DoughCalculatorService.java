@@ -659,6 +659,7 @@ public class DoughCalculatorService {
     
     /**
      * Oblicza porcje mąk w gramach na podstawie miksu.
+     * Uses batch query to avoid N+1 problem.
      */
     public List<Recipe.FlourPortion> calculateFlourPortions(
             List<CalculationRequest.FlourMixEntry> flourMix, double totalFlourGrams) {
@@ -667,10 +668,16 @@ public class DoughCalculatorService {
             return new ArrayList<>();
         }
         
+        // Batch fetch all flours to avoid N+1 query problem
+        List<String> flourIds = flourMix.stream()
+                .map(CalculationRequest.FlourMixEntry::getFlourId)
+                .toList();
+        Map<String, Ingredient> flourMap = ingredientService.findAllByIdsAsMap(flourIds);
+        
         List<Recipe.FlourPortion> portions = new ArrayList<>();
         
         for (CalculationRequest.FlourMixEntry entry : flourMix) {
-            Ingredient flour = ingredientService.findById(entry.getFlourId());
+            Ingredient flour = flourMap.get(entry.getFlourId());
             String flourName = flour != null ? 
                     flour.getName() + (flour.getBrand() != null ? " (" + flour.getBrand() + ")" : "") :
                     "Nieznana mąka";

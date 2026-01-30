@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import { logger } from '../../utils/logger';
 import {
   Box,
   Card,
@@ -79,7 +80,7 @@ const TipDisplay: React.FC<TipDisplayProps> = ({
       setTips(result);
       setDismissedTips(new Set()); // Reset dismissed tips on new context
     } catch (err) {
-      console.error('Error fetching tips:', err);
+      logger.error('Error fetching tips:', err);
       setError('Nie udało się pobrać wskazówek');
     } finally {
       setLoading(false);
@@ -238,6 +239,7 @@ const TipDisplay: React.FC<TipDisplayProps> = ({
                       <IconButton
                         size="small"
                         onClick={() => dismissTip(index)}
+                        aria-label="Zamknij wskazówkę"
                       >
                         <CloseIcon fontSize="small" />
                       </IconButton>
@@ -311,7 +313,7 @@ const TipDisplay: React.FC<TipDisplayProps> = ({
                       </Box>
                       
                       {tip.details && (
-                        <IconButton size="small">
+                        <IconButton size="small" aria-label={isExpanded ? 'Zwiń szczegóły' : 'Rozwiń szczegóły'}>
                           <ExpandMoreIcon
                             sx={{
                               transform: isExpanded ? 'rotate(180deg)' : 'none',

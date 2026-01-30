@@ -29,6 +29,7 @@ import {
 } from '@mui/icons-material';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { recipesApi } from '../services/api';
+import type { FermentationStep } from '../types';
 import { format } from 'date-fns';
 import { pl } from 'date-fns/locale';
 
@@ -184,7 +185,7 @@ const RecipeDetailPage: React.FC = () => {
                   Harmonogram fermentacji
                 </Typography>
                 <Stepper orientation="vertical">
-                  {recipe.fermentationSteps.map((step: any, index: number) => (
+                  {recipe.fermentationSteps.map((step: FermentationStep, index: number) => (
                     <Step key={index} active completed={step.completed}>
                       <StepLabel
                         StepIconComponent={() =>

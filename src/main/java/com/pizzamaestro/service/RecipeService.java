@@ -76,6 +76,7 @@ public class RecipeService {
     /**
      * Pobiera recepturę po ID.
      */
+    @Transactional(readOnly = true)
     public Recipe findById(String id) {
         return recipeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Receptura nie znaleziona"));
@@ -84,6 +85,7 @@ public class RecipeService {
     /**
      * Pobiera recepturę użytkownika po ID.
      */
+    @Transactional(readOnly = true)
     public Recipe findByIdAndUserId(String id, String userId) {
         return recipeRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Receptura nie znaleziona"));
@@ -92,6 +94,7 @@ public class RecipeService {
     /**
      * Pobiera wszystkie receptury użytkownika.
      */
+    @Transactional(readOnly = true)
     public List<Recipe> findByUserId(String userId) {
         return recipeRepository.findByUserIdOrderByCreatedAtDesc(userId);
     }
@@ -99,6 +102,7 @@ public class RecipeService {
     /**
      * Pobiera receptury użytkownika z paginacją.
      */
+    @Transactional(readOnly = true)
     public Page<Recipe> findByUserId(String userId, Pageable pageable) {
         return recipeRepository.findByUserId(userId, pageable);
     }
@@ -106,6 +110,7 @@ public class RecipeService {
     /**
      * Pobiera ulubione receptury użytkownika.
      */
+    @Transactional(readOnly = true)
     public List<Recipe> findFavorites(String userId) {
         return recipeRepository.findByUserIdAndFavoriteTrue(userId);
     }
@@ -262,7 +267,8 @@ public class RecipeService {
         }
         
         // Wygeneruj nowy token
-        String token = java.util.UUID.randomUUID().toString().replace("-", "").substring(0, 12);
+        String token = java.util.UUID.randomUUID().toString().replace("-", "")
+                .substring(0, com.pizzamaestro.constants.CalculatorConstants.SHARE_TOKEN_LENGTH);
         recipe.setShareToken(token);
         recipe.setShareTokenExpiresAt(null); // Nie wygasa domyślnie
         

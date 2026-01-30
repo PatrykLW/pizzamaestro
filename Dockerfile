@@ -22,20 +22,29 @@ RUN mvn clean package -DskipTests -Dskip.frontend=true
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 
-# Ustaw timezone
-RUN apk add --no-cache tzdata
+# Install wget for healthcheck and set timezone
+RUN apk add --no-cache tzdata wget && \
+    addgroup -g 1001 -S appgroup && \
+    adduser -u 1001 -S appuser -G appgroup
+
 ENV TZ=Europe/Warsaw
 
-# Kopiuj JAR
-COPY --from=backend-build /app/target/*.jar app.jar
+# Copy JAR with specific name pattern
+COPY --from=backend-build /app/target/pizzamaestro-*.jar app.jar
+
+# Change ownership to non-root user
+RUN chown -R appuser:appgroup /app
+
+# Switch to non-root user for security
+USER appuser
 
 # Healthcheck
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
     CMD wget --no-verbose --tries=1 --spider http://localhost:8080/actuator/health || exit 1
 
-# Port (Railway używa zmiennej PORT)
+# Port (Railway uses PORT variable)
 EXPOSE 8080
 ENV PORT=8080
 
-# Uruchom aplikację
-ENTRYPOINT ["sh", "-c", "java -Dserver.port=${PORT:-8080} -jar app.jar"]
+# Run with JVM container support and memory tuning
+ENTRYPOINT ["sh", "-c", "java -XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -Dserver.port=${PORT:-8080} -jar app.jar"]

@@ -32,9 +32,10 @@ server:
     mime-types: application/json,application/xml,text/html,text/xml,text/plain,application/javascript,text/css
 
 # JWT Configuration
-# WAŻNE: W produkcji JWT_SECRET musi być ustawiony jako zmienna środowiskowa (min. 256 bitów)
+# CRITICAL: JWT_SECRET must be set as environment variable (min. 256 bits)
+# Application will fail to start without it - this is intentional for security
 jwt:
-  secret: ${JWT_SECRET:devOnlySecretKeyForLocalDevelopmentMustBeAtLeast256BitsLongForHS256Algorithm}
+  secret: ${JWT_SECRET}
   expiration: ${JWT_EXPIRATION:86400000} # 24 hours in milliseconds
   refresh-expiration: ${JWT_REFRESH_EXPIRATION:604800000} # 7 days
 
@@ -91,10 +92,12 @@ logging:
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
 
-# OpenAPI/Swagger
+# OpenAPI/Swagger - disabled by default in production (enable with SPRINGDOC_API_DOCS_ENABLED=true)
 springdoc:
   api-docs:
     path: /api-docs
+    enabled: ${SPRINGDOC_API_DOCS_ENABLED:false}
   swagger-ui:
     path: /swagger-ui.html
     operationsSorter: method
+    enabled: ${SPRINGDOC_SWAGGER_UI_ENABLED:false}

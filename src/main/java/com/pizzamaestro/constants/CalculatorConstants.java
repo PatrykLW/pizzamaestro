@@ -100,6 +100,45 @@ public final class CalculatorConstants {
     public static final double Q10_FACTOR = 2.0;
     public static final double TEMP_BASE_DIFF = 10.0;
     
+    // ===============================================
+    // COLD FERMENTATION
+    // ===============================================
+    public static final double COLD_BASE_YEAST_PERCENTAGE = 0.15;
+    public static final double COLD_BASE_HOURS = 24.0;
+    public static final double COLD_ACTIVITY_FACTOR = 0.1;
+    public static final double COLD_ACTIVITY_BASE = 0.05;
+    public static final double COLD_ACTIVITY_MULTIPLIER = 0.025;
+    public static final double LONG_COLD_FERMENTATION_FACTOR = 0.7;
+    public static final double VERY_LONG_COLD_FERMENTATION_FACTOR = 0.8;
+    public static final double MIN_YEAST_PERCENTAGE = 0.02;
+    public static final double MAX_YEAST_PERCENTAGE = 0.5;
+    public static final int MAX_ROOM_HOURS_BEFORE_COLD = 4;
+    public static final int ROOM_HOURS_DIVISOR = 6;
+    public static final int POST_COLD_REST_HOURS = 2;
+    public static final double REFERENCE_ROOM_TEMP = 24.0;
+    
+    // ===============================================
+    // WEATHER THRESHOLDS
+    // ===============================================
+    public static final double COLD_WEATHER_THRESHOLD = 10.0;
+    public static final double COOL_WEATHER_THRESHOLD = 15.0;
+    public static final double WARM_WEATHER_THRESHOLD = 25.0;
+    public static final double HOT_WEATHER_THRESHOLD = 30.0;
+    
+    // ===============================================
+    // TIP ENGINE THRESHOLDS
+    // ===============================================
+    public static final int TIP_SHORT_FERMENTATION_HOURS = 8;
+    public static final int TIP_MEDIUM_FERMENTATION_HOURS = 16;
+    public static final int TIP_LONG_FERMENTATION_HOURS = 24;
+    public static final int TIP_VERY_LONG_FERMENTATION_HOURS = 48;
+    
+    // ===============================================
+    // SECURITY
+    // ===============================================
+    public static final int BCRYPT_STRENGTH = 12;
+    public static final int SHARE_TOKEN_LENGTH = 12;
+    
     private CalculatorConstants() {
         throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }

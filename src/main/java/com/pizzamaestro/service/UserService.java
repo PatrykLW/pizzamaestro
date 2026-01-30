@@ -81,6 +81,7 @@ public class UserService {
      * @throws IllegalArgumentException gdy id jest null/puste
      * @throws ResourceNotFoundException gdy użytkownik nie istnieje
      */
+    @Transactional(readOnly = true)
     public User findById(String id) {
         if (id == null || id.trim().isEmpty()) {
             log.error("❌ ID użytkownika nie może być puste");
@@ -103,6 +104,7 @@ public class UserService {
      * @throws IllegalArgumentException gdy email jest null/pusty
      * @throws ResourceNotFoundException gdy użytkownik nie istnieje
      */
+    @Transactional(readOnly = true)
     public User findByEmail(String email) {
         if (email == null || email.trim().isEmpty()) {
             log.error("❌ Email nie może być pusty");

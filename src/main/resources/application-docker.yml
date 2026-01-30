@@ -4,7 +4,8 @@
 spring:
   data:
     mongodb:
-      uri: mongodb://${MONGO_USER:pizzamaestro}:${MONGO_PASSWORD:PizzaMaestro2024!}@mongodb:27017/${MONGO_DATABASE:pizzamaestro}?authSource=admin
+      # MONGODB_URI must be set via environment variable - no default password allowed
+      uri: ${MONGODB_URI}
       auto-index-creation: true
 
   # Wyłącz devtools w Docker

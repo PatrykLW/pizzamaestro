@@ -92,7 +92,9 @@ const KnowledgeBasePage: React.FC = () => {
     queryFn: knowledgeApi.getPopular,
   });
   
-  const getDifficultyColor = (difficulty: string) => {
+  type ChipColor = 'default' | 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning';
+  
+  const getDifficultyColor = (difficulty: string): ChipColor => {
     switch (difficulty) {
       case 'BEGINNER':
         return 'success';
@@ -151,7 +153,7 @@ const KnowledgeBasePage: React.FC = () => {
             <Chip
               icon={<SchoolIcon />}
               label={getDifficultyLabel(singleGuide.difficulty)}
-              color={getDifficultyColor(singleGuide.difficulty) as any}
+              color={getDifficultyColor(singleGuide.difficulty)}
             />
             <Chip
               icon={<TimerIcon />}
@@ -505,7 +507,7 @@ const KnowledgeBasePage: React.FC = () => {
                     <Chip
                       size="small"
                       label={getDifficultyLabel(guide.difficulty)}
-                      color={getDifficultyColor(guide.difficulty) as any}
+                      color={getDifficultyColor(guide.difficulty)}
                     />
                     <Chip
                       size="small"

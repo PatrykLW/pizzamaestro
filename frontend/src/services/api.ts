@@ -870,8 +870,9 @@ export const activePizzaApi = {
     try {
       const response = await api.get('/api/active-pizza/current');
       return response.data;
-    } catch (error: any) {
-      if (error.response?.status === 204) {
+    } catch (error: unknown) {
+      const axiosError = error as { response?: { status?: number } };
+      if (axiosError.response?.status === 204) {
         return null;
       }
       throw error;

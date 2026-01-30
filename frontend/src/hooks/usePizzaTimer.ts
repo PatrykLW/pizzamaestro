@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { ScheduledStepResponse } from '../services/api';
+import { logger } from '../utils/logger';
 
 interface UsePizzaTimerOptions {
   steps: ScheduledStepResponse[];
@@ -141,7 +142,7 @@ export function usePizzaTimer({
         notification.close();
       };
     } catch (error) {
-      console.error('Błąd powiadomienia:', error);
+      logger.error('Błąd powiadomienia:', error);
     }
   }, [notificationPermission]);
 
