@@ -20,8 +20,8 @@
     <description>Zaawansowany kalkulator do pizzy dla entuzjastów i profesjonalistów</description>
     
     <properties>
-        <java.version>25</java.version>
-        <node.version>v25.0.0</node.version>
+        <java.version>21</java.version>
+        <node.version>v20.18.0</node.version>
         <npm.version>10.2.3</npm.version>
         <frontend-maven-plugin.version>2.0.0</frontend-maven-plugin.version>
         <jjwt.version>0.13.0</jjwt.version>
