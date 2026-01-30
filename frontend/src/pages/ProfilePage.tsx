@@ -187,7 +187,7 @@ const ProfilePage: React.FC = () => {
         </Card>
         <Grid container spacing={3}>
           {[1, 2, 3].map((i) => (
-            <Grid size={{ xs: 12, md: 4 }} key={i}>
+            <Grid item xs={12} md={4} key={i}>
               <Skeleton variant="rounded" height={140} />
             </Grid>
           ))}
@@ -271,7 +271,7 @@ const ProfilePage: React.FC = () => {
 
       {/* Stats Cards */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
-        <Grid size={{ xs: 12, md: 4 }}>
+        <Grid item xs={12} md={4}>
           <Card sx={{ height: '100%' }}>
             <CardContent sx={{ textAlign: 'center' }}>
               <Calculate sx={{ fontSize: 48, color: 'primary.main', mb: 1 }} />
@@ -284,7 +284,7 @@ const ProfilePage: React.FC = () => {
             </CardContent>
           </Card>
         </Grid>
-        <Grid size={{ xs: 12, md: 4 }}>
+        <Grid item xs={12} md={4}>
           <Card sx={{ height: '100%' }}>
             <CardContent sx={{ textAlign: 'center' }}>
               <LocalPizza sx={{ fontSize: 48, color: 'secondary.main', mb: 1 }} />
@@ -297,7 +297,7 @@ const ProfilePage: React.FC = () => {
             </CardContent>
           </Card>
         </Grid>
-        <Grid size={{ xs: 12, md: 4 }}>
+        <Grid item xs={12} md={4}>
           <Card sx={{ height: '100%' }}>
             <CardContent sx={{ textAlign: 'center' }}>
               <Typography variant="h3" fontWeight="bold" color="primary">
@@ -378,7 +378,7 @@ const ProfilePage: React.FC = () => {
 
             <Grid container spacing={3}>
               {/* Piec */}
-              <Grid size={{ xs: 12, md: 6 }}>
+              <Grid item xs={12} md={6}>
                 <FormControl fullWidth disabled={!editingEquipment}>
                   <InputLabel>
                     <LocalFireDepartment sx={{ mr: 1, verticalAlign: 'middle' }} />
@@ -409,7 +409,7 @@ const ProfilePage: React.FC = () => {
               </Grid>
 
               {/* Mikser */}
-              <Grid size={{ xs: 12, md: 6 }}>
+              <Grid item xs={12} md={6}>
                 <FormControl fullWidth disabled={!editingEquipment}>
                   <InputLabel>
                     <Blender sx={{ mr: 1, verticalAlign: 'middle' }} />
@@ -439,7 +439,7 @@ const ProfilePage: React.FC = () => {
               </Grid>
 
               {/* Moc miksera */}
-              <Grid size={{ xs: 12, md: 6 }}>
+              <Grid item xs={12} md={6}>
                 <TextField
                   fullWidth
                   type="number"
@@ -453,7 +453,7 @@ const ProfilePage: React.FC = () => {
               </Grid>
 
               {/* Domyślna woda */}
-              <Grid size={{ xs: 12, md: 6 }}>
+              <Grid item xs={12} md={6}>
                 <FormControl fullWidth disabled={!editingEquipment}>
                   <InputLabel>
                     <WaterDrop sx={{ mr: 1, verticalAlign: 'middle' }} />
@@ -477,7 +477,7 @@ const ProfilePage: React.FC = () => {
               </Grid>
 
               {/* Dostępne mąki */}
-              <Grid size={{ xs: 12 }}>
+              <Grid item xs={12}>
                 <Autocomplete
                   multiple
                   disabled={!editingEquipment}
@@ -552,7 +552,7 @@ const ProfilePage: React.FC = () => {
 
             <Grid container spacing={3}>
               {/* Temperatura pokojowa */}
-              <Grid size={{ xs: 12, md: 6 }}>
+              <Grid item xs={12} md={6}>
                 <Typography gutterBottom>
                   Typowa temperatura pokojowa: {environmentForm.typicalRoomTemperature}°C
                 </Typography>
@@ -573,7 +573,7 @@ const ProfilePage: React.FC = () => {
               </Grid>
 
               {/* Temperatura lodówki */}
-              <Grid size={{ xs: 12, md: 6 }}>
+              <Grid item xs={12} md={6}>
                 <Typography gutterBottom>
                   Typowa temperatura lodówki: {environmentForm.typicalFridgeTemperature}°C
                 </Typography>
@@ -594,7 +594,7 @@ const ProfilePage: React.FC = () => {
               </Grid>
 
               {/* Domyślne miasto */}
-              <Grid size={{ xs: 12, md: 6 }}>
+              <Grid item xs={12} md={6}>
                 <TextField
                   fullWidth
                   label="Domyślne miasto (dla pogody)"
@@ -609,7 +609,7 @@ const ProfilePage: React.FC = () => {
               </Grid>
 
               {/* Lokalizacja GPS */}
-              <Grid size={{ xs: 12, md: 6 }}>
+              <Grid item xs={12} md={6}>
                 <Box>
                   <Typography variant="body2" color="text.secondary" gutterBottom>
                     Domyślna lokalizacja (GPS)
@@ -683,7 +683,7 @@ const ProfilePage: React.FC = () => {
             </Box>
 
             <Grid container spacing={3}>
-              <Grid size={{ xs: 12, md: 4 }}>
+              <Grid item xs={12} md={4}>
                 <FormControlLabel
                   control={
                     <Switch
@@ -695,7 +695,7 @@ const ProfilePage: React.FC = () => {
                   label="Powiadomienia email"
                 />
               </Grid>
-              <Grid size={{ xs: 12, md: 4 }}>
+              <Grid item xs={12} md={4}>
                 <FormControlLabel
                   control={
                     <Switch
@@ -707,7 +707,7 @@ const ProfilePage: React.FC = () => {
                   label="Powiadomienia SMS"
                 />
               </Grid>
-              <Grid size={{ xs: 12, md: 4 }}>
+              <Grid item xs={12} md={4}>
                 <FormControlLabel
                   control={
                     <Switch
@@ -720,7 +720,7 @@ const ProfilePage: React.FC = () => {
                 />
               </Grid>
 
-              <Grid size={{ xs: 12, md: 6 }}>
+              <Grid item xs={12} md={6}>
                 <Typography gutterBottom>
                   Przypomnienie SMS przed krokiem: {notificationsForm.smsReminderMinutesBefore || 15} min
                 </Typography>

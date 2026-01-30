@@ -871,7 +871,7 @@ Wygenerowano na pizzamaestro.pl`;
 
               <Grid container spacing={3}>
                 {styles?.map((style: PizzaStyle) => (
-                  <Grid size={{ xs: 12, sm: 6, md: 4 }} key={style.id}>
+                  <Grid item xs={12} sm={6} md={4} key={style.id}>
                     <MotionCard
                       whileHover={{ y: -8, boxShadow: '0 12px 40px rgba(0,0,0,0.15)' }}
                       onClick={() => {
@@ -976,7 +976,7 @@ Wygenerowano na pizzamaestro.pl`;
               exit={{ opacity: 0, x: -50 }}
             >
               <Grid container spacing={4}>
-                <Grid size={{ xs: 12, md: 8 }}>
+                <Grid item xs={12} md={8}>
                   {/* Przycisk użycia domyślnego sprzętu */}
                   {isAuthenticated && user?.preferences && (
                     <Card sx={{ p: 2, mb: 3, bgcolor: equipmentLoaded ? 'success.50' : 'primary.50', border: '2px dashed', borderColor: equipmentLoaded ? 'success.main' : 'primary.main' }}>
@@ -1014,7 +1014,7 @@ Wygenerowano na pizzamaestro.pl`;
                     </Typography>
 
                     <Grid container spacing={3} sx={{ mt: 1 }}>
-                      <Grid size={{ xs: 12, sm: 6 }}>
+                      <Grid item xs={12} sm={6}>
                         <Controller
                           name="numberOfPizzas"
                           control={control}
@@ -1031,7 +1031,7 @@ Wygenerowano na pizzamaestro.pl`;
                           )}
                         />
                       </Grid>
-                      <Grid size={{ xs: 12, sm: 6 }}>
+                      <Grid item xs={12} sm={6}>
                         <Controller
                           name="ballWeight"
                           control={control}
@@ -1047,7 +1047,7 @@ Wygenerowano na pizzamaestro.pl`;
                         />
                       </Grid>
                       
-                      <Grid size={{ xs: 12 }}>
+                      <Grid item xs={12}>
                         <Box sx={{ p: 2, bgcolor: 'primary.50', borderRadius: 2, border: '2px solid', borderColor: 'primary.main' }}>
                           <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
                             ⏰ Za ile godzin chcesz robić pizzę?
@@ -1095,7 +1095,7 @@ Wygenerowano na pizzamaestro.pl`;
                         </Box>
                       </Grid>
 
-                      <Grid size={{ xs: 12 }}>
+                      <Grid item xs={12}>
                         <Box sx={{ px: 2 }}>
                           <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                             <Typography fontWeight="500">
@@ -1146,7 +1146,7 @@ Wygenerowano na pizzamaestro.pl`;
 
                     <Grid container spacing={3}>
                       {/* === SEKCJA MĄKI === */}
-                      <Grid size={{ xs: 12 }}>
+                      <Grid item xs={12}>
                         <Box sx={{ 
                           p: 3, 
                           bgcolor: alpha(theme.palette.primary.main, 0.05), 
@@ -1329,7 +1329,7 @@ Wygenerowano na pizzamaestro.pl`;
                       </Grid>
 
                       {/* Sól, oliwa, cukier */}
-                      <Grid size={{ xs: 12, sm: 4 }}>
+                      <Grid item xs={12} sm={4}>
                         <Controller
                           name="saltPercentage"
                           control={control}
@@ -1345,7 +1345,7 @@ Wygenerowano na pizzamaestro.pl`;
                           )}
                         />
                       </Grid>
-                      <Grid size={{ xs: 12, sm: 4 }}>
+                      <Grid item xs={12} sm={4}>
                         <Controller
                           name="oilPercentage"
                           control={control}
@@ -1363,7 +1363,7 @@ Wygenerowano na pizzamaestro.pl`;
                           )}
                         />
                       </Grid>
-                      <Grid size={{ xs: 12, sm: 4 }}>
+                      <Grid item xs={12} sm={4}>
                         <Controller
                           name="sugarPercentage"
                           control={control}
@@ -1383,7 +1383,7 @@ Wygenerowano na pizzamaestro.pl`;
                   </Card>
                 </Grid>
 
-                <Grid size={{ xs: 12, md: 4 }}>
+                <Grid item xs={12} md={4}>
                   {/* Panel pogodowy */}
                   <Card sx={{ p: 3, mb: 3 }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
@@ -1524,14 +1524,14 @@ Wygenerowano na pizzamaestro.pl`;
               exit={{ opacity: 0, x: -50 }}
             >
               <Grid container spacing={4}>
-                <Grid size={{ xs: 12, md: 8 }}>
+                <Grid item xs={12} md={8}>
                   <Card sx={{ p: 4 }}>
                     <Typography variant="h5" fontWeight="bold" gutterBottom>
                       Fermentacja i wypiek
                     </Typography>
 
                     <Grid container spacing={3} sx={{ mt: 1 }}>
-                      <Grid size={{ xs: 12, sm: 6 }}>
+                      <Grid item xs={12} sm={6}>
                         <Controller
                           name="yeastType"
                           control={control}
@@ -1546,7 +1546,7 @@ Wygenerowano na pizzamaestro.pl`;
                           )}
                         />
                       </Grid>
-                      <Grid size={{ xs: 12, sm: 6 }}>
+                      <Grid item xs={12} sm={6}>
                         <Controller
                           name="fermentationMethod"
                           control={control}
@@ -1562,7 +1562,7 @@ Wygenerowano na pizzamaestro.pl`;
                         />
                       </Grid>
 
-                      <Grid size={{ xs: 12 }}>
+                      <Grid item xs={12}>
                         <Box sx={{ px: 2 }}>
                           <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                             <Typography fontWeight="500">Czas fermentacji</Typography>
@@ -1602,7 +1602,7 @@ Wygenerowano na pizzamaestro.pl`;
                         </Box>
                       </Grid>
 
-                      <Grid size={{ xs: 12, sm: 6 }}>
+                      <Grid item xs={12} sm={6}>
                         <Controller
                           name="roomTemperature"
                           control={control}
@@ -1620,7 +1620,7 @@ Wygenerowano na pizzamaestro.pl`;
                           )}
                         />
                       </Grid>
-                      <Grid size={{ xs: 12, sm: 6 }}>
+                      <Grid item xs={12} sm={6}>
                         <Controller
                           name="fridgeTemperature"
                           control={control}
@@ -1639,7 +1639,7 @@ Wygenerowano na pizzamaestro.pl`;
                       </Grid>
 
                       {/* === TECHNIKI CIASTA === */}
-                      <Grid size={{ xs: 12 }}>
+                      <Grid item xs={12}>
                         <Box sx={{ 
                           p: 3, 
                           bgcolor: alpha(theme.palette.info.main, 0.05), 
@@ -1724,7 +1724,7 @@ Wygenerowano na pizzamaestro.pl`;
                             {useStretchAndFold && (
                               <Box sx={{ mt: 2, ml: 4 }}>
                                 <Grid container spacing={2}>
-                                  <Grid size={{ xs: 6 }}>
+                                  <Grid item xs={6}>
                                     <Typography variant="body2" gutterBottom>
                                       Liczba serii: <strong>{stretchAndFoldSeries}</strong>
                                     </Typography>
@@ -1737,7 +1737,7 @@ Wygenerowano na pizzamaestro.pl`;
                                       marks
                                     />
                                   </Grid>
-                                  <Grid size={{ xs: 6 }}>
+                                  <Grid item xs={6}>
                                     <Typography variant="body2" gutterBottom>
                                       Przerwa: <strong>{stretchAndFoldInterval} min</strong>
                                     </Typography>
@@ -1765,7 +1765,7 @@ Wygenerowano na pizzamaestro.pl`;
                       </Grid>
 
                       {/* Typ pieca */}
-                      <Grid size={{ xs: 12 }}>
+                      <Grid item xs={12}>
                         <Controller
                           name="ovenType"
                           control={control}
@@ -1781,7 +1781,7 @@ Wygenerowano na pizzamaestro.pl`;
                         />
                       </Grid>
 
-                      <Grid size={{ xs: 12 }}>
+                      <Grid item xs={12}>
                         <Button
                           onClick={() => setShowAdvanced(!showAdvanced)}
                           endIcon={<ExpandMoreIcon sx={{ transform: showAdvanced ? 'rotate(180deg)' : 'none' }} />}
@@ -1824,7 +1824,7 @@ Wygenerowano na pizzamaestro.pl`;
                         </Collapse>
                       </Grid>
 
-                      <Grid size={{ xs: 12 }}>
+                      <Grid item xs={12}>
                         <Divider sx={{ my: 2 }} />
                         <Controller
                           name="generateSchedule"
@@ -1853,7 +1853,7 @@ Wygenerowano na pizzamaestro.pl`;
                   </Card>
                 </Grid>
 
-                <Grid size={{ xs: 12, md: 4 }}>
+                <Grid item xs={12} md={4}>
                   <Card sx={{ p: 3 }}>
                     <Box
                       component="img"
@@ -1940,7 +1940,7 @@ Wygenerowano na pizzamaestro.pl`;
 
               <Grid container spacing={4}>
                 {/* Ingredients Card */}
-                <Grid size={{ xs: 12, md: 6 }}>
+                <Grid item xs={12} md={6}>
                   <Card sx={{ height: '100%' }}>
                     <CardContent>
                       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
@@ -2072,7 +2072,7 @@ Wygenerowano na pizzamaestro.pl`;
                 </Grid>
 
                 {/* Wykres proporcji składników */}
-                <Grid size={{ xs: 12, md: 6 }}>
+                <Grid item xs={12} md={6}>
                   <Card sx={{ height: '100%' }}>
                     <CardContent>
                       <Typography variant="h5" fontWeight="bold" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -2145,7 +2145,7 @@ Wygenerowano na pizzamaestro.pl`;
                 </Grid>
 
                 {/* Oven Card */}
-                <Grid size={{ xs: 12, md: 6 }}>
+                <Grid item xs={12} md={6}>
                   <Card sx={{ height: '100%' }}>
                     <CardMedia
                       component="img"
@@ -2179,7 +2179,7 @@ Wygenerowano na pizzamaestro.pl`;
 
                 {/* Weather Adjustment Info */}
                 {weatherAdjustment && useWeather && (
-                  <Grid size={{ xs: 12 }}>
+                  <Grid item xs={12}>
                     <Card sx={{ bgcolor: alpha(theme.palette.info.main, 0.05) }}>
                       <CardContent>
                         <Typography variant="h5" fontWeight="bold" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -2187,7 +2187,7 @@ Wygenerowano na pizzamaestro.pl`;
                         </Typography>
                         <Grid container spacing={2}>
                           {weatherAdjustment.recommendations.map((rec, index) => (
-                            <Grid size={{ xs: 12, md: 6 }} key={index}>
+                            <Grid item xs={12} md={6} key={index}>
                               <Alert severity="info" icon={false}>
                                 {rec}
                               </Alert>
@@ -2201,7 +2201,7 @@ Wygenerowano na pizzamaestro.pl`;
 
                 {/* Schedule */}
                 {result.schedule && result.schedule.length > 0 && (
-                  <Grid size={{ xs: 12 }}>
+                  <Grid item xs={12}>
                     <Card>
                       <CardContent>
                         <Typography variant="h5" fontWeight="bold" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -2252,7 +2252,7 @@ Wygenerowano na pizzamaestro.pl`;
 
                 {/* Tips */}
                 {result.tips && result.tips.length > 0 && (
-                  <Grid size={{ xs: 12 }}>
+                  <Grid item xs={12}>
                     <Card sx={{ bgcolor: alpha(theme.palette.info.main, 0.05) }}>
                       <CardContent>
                         <Typography variant="h5" fontWeight="bold" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>

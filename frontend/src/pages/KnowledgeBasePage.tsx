@@ -170,7 +170,7 @@ const KnowledgeBasePage: React.FC = () => {
         
         <Grid container spacing={4}>
           {/* Main content */}
-          <Grid size={{ xs: 12, md: 8 }}>
+          <Grid item xs={12} md={8}>
             {/* Full description */}
             <Card sx={{ mb: 3 }}>
               <CardContent>
@@ -331,7 +331,7 @@ const KnowledgeBasePage: React.FC = () => {
           </Grid>
           
           {/* Sidebar */}
-          <Grid size={{ xs: 12, md: 4 }}>
+          <Grid item xs={12} md={4}>
             {/* Recommended styles */}
             {singleGuide.recommendedForStyles && singleGuide.recommendedForStyles.length > 0 && (
               <Card sx={{ mb: 3 }}>
@@ -453,7 +453,7 @@ const KnowledgeBasePage: React.FC = () => {
         {/* Guides grid */}
         <Grid container spacing={3}>
           {guides?.map((guide, index) => (
-            <Grid size={{ xs: 12, sm: 6, md: 4 }} key={guide.id}>
+            <Grid item xs={12} sm={6} md={4} key={guide.id}>
               <MotionCard
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}

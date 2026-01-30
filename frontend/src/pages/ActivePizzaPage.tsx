@@ -301,7 +301,7 @@ const ActivePizzaPage: React.FC = () => {
 
       <Grid container spacing={3}>
         {/* Główna kolumna - harmonogram */}
-        <Grid size={{ xs: 12, md: 8 }}>
+        <Grid item xs={12} md={8}>
           <Card>
             <CardContent>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
@@ -427,7 +427,7 @@ const ActivePizzaPage: React.FC = () => {
         </Grid>
 
         {/* Boczna kolumna - kontrolki */}
-        <Grid size={{ xs: 12, md: 4 }}>
+        <Grid item xs={12} md={4}>
           {/* Timer do następnego kroku */}
           {activePizza.nextStep && (
             <Card sx={{ mb: 3, bgcolor: 'warning.light' }}>
