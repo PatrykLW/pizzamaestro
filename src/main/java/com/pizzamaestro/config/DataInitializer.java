@@ -281,158 +281,158 @@ public class DataInitializer implements CommandLineRunner {
     private List<Ingredient> initializeFlours() {
         List<Ingredient> flours = Arrays.asList(
                 // --------------- WŁOSKIE MĄKI CAPUTO ---------------
-                createFlour("Caputo Pizzeria", "Caputo", "Włochy",
+                createFlour("Caputo Pizzeria", AppConstants.BRAND_CAPUTO, AppConstants.COUNTRY_ITALY,
                         "Profesjonalna mąka do pizzy neapolitańskiej. Złoty standard w pizzeriach na całym świecie. " +
                         "Idealna do szybkiego pieczenia w piecu w wysokiej temperaturze.",
                         Ingredient.FlourType.TYPE_00, 12.5, 260.0, 58.0, 65.0, 0.55,
                         List.of(PizzaStyle.NEAPOLITAN, PizzaStyle.ROMAN)),
                         
-                createFlour("Caputo Cuoco", "Caputo", "Włochy",
+                createFlour("Caputo Cuoco", AppConstants.BRAND_CAPUTO, AppConstants.COUNTRY_ITALY,
                         "Mąka dla profesjonalnych pizzaiolo z najwyższej jakości pszenicy. " +
                         "Wyższa siła glutenu W=300+ pozwala na długą fermentację 24-72h. " +
                         "Rekomendowana przez AVPN (Associazione Verace Pizza Napoletana).",
                         Ingredient.FlourType.TYPE_00, 13.0, 300.0, 60.0, 70.0, 0.55,
                         List.of(PizzaStyle.NEAPOLITAN)),
                         
-                createFlour("Caputo Nuvola", "Caputo", "Włochy",
+                createFlour("Caputo Nuvola", AppConstants.BRAND_CAPUTO, AppConstants.COUNTRY_ITALY,
                         "Mąka 'Chmura' do lekkiego, puszystego ciasta z dużymi bąblami w cornicione. " +
                         "Specjalnie wyselekcjonowane ziarna dla maksymalnej lekkości. " +
                         "Idealna do canotto style (bardzo napuszony brzeg).",
                         Ingredient.FlourType.TYPE_00, 13.5, 280.0, 65.0, 75.0, 0.55,
                         List.of(PizzaStyle.NEAPOLITAN, PizzaStyle.FOCACCIA, PizzaStyle.PIZZA_BIANCA)),
                         
-                createFlour("Caputo Saccorosso", "Caputo", "Włochy",
+                createFlour("Caputo Saccorosso", AppConstants.BRAND_CAPUTO, AppConstants.COUNTRY_ITALY,
                         "Najwyższa jakość mąki Caputo w charakterystycznym czerwonym worku. " +
                         "W=300-320, idealna do 48-72h fermentacji. Daje najbardziej aromatyczne ciasto.",
                         Ingredient.FlourType.TYPE_00, 13.5, 310.0, 62.0, 72.0, 0.55,
                         List.of(PizzaStyle.NEAPOLITAN)),
                         
-                createFlour("Caputo Fioreglut (bezglutenowa)", "Caputo", "Włochy",
+                createFlour("Caputo Fioreglut (bezglutenowa)", AppConstants.BRAND_CAPUTO, AppConstants.COUNTRY_ITALY,
                         "Bezglutenowa mąka Caputo do pizzy. Mieszanka ryżu, ziemniaków i włókna. " +
                         "Certyfikowana dla osób z celiakią. Wymaga innej techniki wyrabiania.",
                         Ingredient.FlourType.GLUTEN_FREE, 4.0, null, 60.0, 65.0, 0.50,
                         List.of(PizzaStyle.NEAPOLITAN, PizzaStyle.NEW_YORK)),
                         
                 // --------------- WŁOSKIE MĄKI LE 5 STAGIONI ---------------
-                createFlour("Le 5 Stagioni Superiore", "Le 5 Stagioni", "Włochy",
+                createFlour("Le 5 Stagioni Superiore", AppConstants.BRAND_LE_5_STAGIONI, AppConstants.COUNTRY_ITALY,
                         "Wysokiej jakości włoska mąka do pizzy z pszenicy włoskiej. " +
                         "W=220-240, odpowiednia dla fermentacji 8-24h.",
                         Ingredient.FlourType.TYPE_00, 12.0, 230.0, 55.0, 65.0, 0.55,
                         List.of(PizzaStyle.NEAPOLITAN, PizzaStyle.NEW_YORK)),
                         
-                createFlour("Le 5 Stagioni Oro", "Le 5 Stagioni", "Włochy",
+                createFlour("Le 5 Stagioni Oro", AppConstants.BRAND_LE_5_STAGIONI, AppConstants.COUNTRY_ITALY,
                         "Mąka premium z włoskiej pszenicy Manitoba. W=340-360 dla długiej fermentacji.",
                         Ingredient.FlourType.TYPE_00, 14.0, 350.0, 65.0, 75.0, 0.55,
                         List.of(PizzaStyle.NEAPOLITAN, PizzaStyle.ROMAN, PizzaStyle.FOCACCIA)),
                         
-                createFlour("Le 5 Stagioni Integrale", "Le 5 Stagioni", "Włochy",
+                createFlour("Le 5 Stagioni Integrale", AppConstants.BRAND_LE_5_STAGIONI, AppConstants.COUNTRY_ITALY,
                         "Pełnoziarnista mąka włoska. Bogata w błonnik i minerały. " +
                         "Używaj w mieszance 20-30% z mąką białą.",
                         Ingredient.FlourType.WHOLE_WHEAT, 13.0, null, 68.0, 80.0, 1.40,
                         List.of(PizzaStyle.FOCACCIA, PizzaStyle.PIZZA_BIANCA)),
                         
                 // --------------- WŁOSKIE MĄKI MOLINO GRASSI ---------------
-                createFlour("Manitoba Cream", "Molino Grassi", "Włochy",
+                createFlour("Manitoba Cream", AppConstants.BRAND_MOLINO_GRASSI, AppConstants.COUNTRY_ITALY,
                         "Bardzo mocna mąka Manitoba do ciast wysokohydratowanych i bab. " +
                         "W=380+ zapewnia ekstremalną elastyczność glutenu.",
                         Ingredient.FlourType.MANITOBA, 14.5, 380.0, 65.0, 85.0, 0.50,
                         List.of(PizzaStyle.PIZZA_BIANCA, PizzaStyle.FOCACCIA, PizzaStyle.ROMAN)),
                         
-                createFlour("Molino Grassi Tipo 1", "Molino Grassi", "Włochy",
+                createFlour("Molino Grassi Tipo 1", AppConstants.BRAND_MOLINO_GRASSI, AppConstants.COUNTRY_ITALY,
                         "Półpełnoziarnista mąka włoska tipo 1. Więcej składników odżywczych niż tipo 00. " +
                         "Ciemniejsza barwa, głębszy smak.",
                         Ingredient.FlourType.TYPE_1, 12.5, 280.0, 60.0, 70.0, 0.65,
                         List.of(PizzaStyle.ROMAN, PizzaStyle.FOCACCIA)),
                         
                 // --------------- WŁOSKIE MĄKI DALLAGIOVANNA ---------------
-                createFlour("Dallagiovanna Classica", "Dallagiovanna", "Włochy",
+                createFlour("Dallagiovanna Classica", AppConstants.BRAND_DALLAGIOVANNA, AppConstants.COUNTRY_ITALY,
                         "Profesjonalna mąka pizza z Parmy. Używana w wielu mistrzowskich pizzeriach.",
                         Ingredient.FlourType.TYPE_00, 12.0, 250.0, 58.0, 65.0, 0.55,
                         List.of(PizzaStyle.NEAPOLITAN, PizzaStyle.NEW_YORK)),
                         
-                createFlour("Dallagiovanna Uniqua Blu", "Dallagiovanna", "Włochy",
+                createFlour("Dallagiovanna Uniqua Blu", AppConstants.BRAND_DALLAGIOVANNA, AppConstants.COUNTRY_ITALY,
                         "Premium mąka z błękitnego worka. Niebielona, zachowuje naturalne właściwości ziarna.",
                         Ingredient.FlourType.TYPE_0, 13.0, 290.0, 62.0, 72.0, 0.60,
                         List.of(PizzaStyle.NEAPOLITAN, PizzaStyle.ROMAN)),
                         
                 // --------------- POLSKIE MĄKI ---------------
-                createFlour("Lubella Tipo 00 Pizza", "Lubella", "Polska",
+                createFlour("Lubella Tipo 00 Pizza", AppConstants.BRAND_LUBELLA, AppConstants.COUNTRY_POLAND,
                         "Polska mąka do pizzy w stylu włoskim. Dobry stosunek jakości do ceny. " +
                         "Popularna wśród domowych pizzaiolo.",
                         Ingredient.FlourType.TYPE_00, 11.5, null, 55.0, 62.0, 0.55,
                         List.of(PizzaStyle.NEW_YORK, PizzaStyle.DETROIT)),
                         
-                createFlour("Mąka Poznańska Typ 500", "Polskie Młyny", "Polska",
+                createFlour("Mąka Poznańska Typ 500", "Polskie Młyny", AppConstants.COUNTRY_POLAND,
                         "Uniwersalna polska mąka pszenna typ 500. Podstawa polskiej kuchni.",
                         Ingredient.FlourType.ALL_PURPOSE, 10.5, null, 55.0, 60.0, 0.50,
                         List.of(PizzaStyle.NEW_YORK, PizzaStyle.PAN)),
                         
-                createFlour("Mąka Krupczatka Typ 450", "Melvit", "Polska",
+                createFlour("Mąka Krupczatka Typ 450", "Melvit", AppConstants.COUNTRY_POLAND,
                         "Polska mąka krupczatka - delikatniejsza struktura. Dobre do cienkiego ciasta.",
                         Ingredient.FlourType.TYPE_00, 10.0, null, 52.0, 58.0, 0.45,
                         List.of(PizzaStyle.THIN_CRUST)),
                         
-                createFlour("Mąka Orkiszowa Typ 700", "BioGol", "Polska",
+                createFlour("Mąka Orkiszowa Typ 700", "BioGol", AppConstants.COUNTRY_POLAND,
                         "Polska mąka orkiszowa ekologiczna. Dla osób unikających nowoczesnej pszenicy.",
                         Ingredient.FlourType.SPELT, 14.0, null, 55.0, 65.0, 0.70,
                         List.of(PizzaStyle.FOCACCIA)),
                         
-                createFlour("Mąka Razowa Pszenna Typ 2000", "Polskie Młyny", "Polska",
+                createFlour("Mąka Razowa Pszenna Typ 2000", "Polskie Młyny", AppConstants.COUNTRY_POLAND,
                         "Polska mąka razowa. 100% ziarna pszenicy. Używaj w mieszankach.",
                         Ingredient.FlourType.WHOLE_WHEAT, 14.0, null, 70.0, 85.0, 2.00,
                         List.of(PizzaStyle.FOCACCIA)),
                         
                 // --------------- AMERYKAŃSKIE MĄKI ---------------
-                createFlour("King Arthur Bread Flour", "King Arthur", "USA",
+                createFlour("King Arthur Bread Flour", AppConstants.BRAND_KING_ARTHUR, AppConstants.COUNTRY_USA,
                         "Amerykańska mąka chlebowa, popularna do pizzy nowojorskiej. " +
                         "Wysokie białko 12.7% daje żuistą teksturę.",
                         Ingredient.FlourType.BREAD_FLOUR, 12.7, null, 58.0, 68.0, 0.54,
                         List.of(PizzaStyle.NEW_YORK, PizzaStyle.DETROIT, PizzaStyle.GRANDMA)),
                         
-                createFlour("King Arthur All-Purpose", "King Arthur", "USA",
+                createFlour("King Arthur All-Purpose", AppConstants.BRAND_KING_ARTHUR, AppConstants.COUNTRY_USA,
                         "Amerykańska mąka uniwersalna premium. Wyższa jakość niż typowe mąki AP.",
                         Ingredient.FlourType.ALL_PURPOSE, 11.7, null, 55.0, 63.0, 0.50,
                         List.of(PizzaStyle.NEW_YORK, PizzaStyle.PAN)),
                         
-                createFlour("King Arthur Sir Lancelot", "King Arthur", "USA",
+                createFlour("King Arthur Sir Lancelot", AppConstants.BRAND_KING_ARTHUR, AppConstants.COUNTRY_USA,
                         "Mąka high-gluten dla profesjonalistów. 14.2% białka dla maksymalnej struktury.",
                         Ingredient.FlourType.HIGH_GLUTEN, 14.2, null, 62.0, 72.0, 0.50,
                         List.of(PizzaStyle.NEW_YORK, PizzaStyle.DETROIT)),
                         
-                createFlour("General Mills All Trumps", "General Mills", "USA",
+                createFlour("General Mills All Trumps", AppConstants.BRAND_GENERAL_MILLS, AppConstants.COUNTRY_USA,
                         "Mąka high-gluten używana w klasycznych pizzeriach NYC. Kultowy wybór.",
                         Ingredient.FlourType.HIGH_GLUTEN, 14.0, null, 60.0, 70.0, 0.50,
                         List.of(PizzaStyle.NEW_YORK)),
                         
                 // --------------- SPECJALISTYCZNE ---------------
-                createFlour("Semola Rimacinata", "De Cecco", "Włochy",
+                createFlour("Semola Rimacinata", "De Cecco", AppConstants.COUNTRY_ITALY,
                         "Dwukrotnie mielona semolina z pszenicy durum. Dodaje złocisty kolor i chrupkość. " +
                         "Używaj 10-20% w mieszance z tipo 00.",
                         Ingredient.FlourType.SEMOLINA, 12.5, null, 55.0, 65.0, 0.75,
                         List.of(PizzaStyle.ROMAN, PizzaStyle.SICILIAN)),
                         
-                createFlour("Farina di Farro (orkisz włoski)", "Mulino Marino", "Włochy",
+                createFlour("Farina di Farro (orkisz włoski)", "Mulino Marino", AppConstants.COUNTRY_ITALY,
                         "Włoska mąka orkiszowa z młyna Mulino Marino. Delikatny orzechowy smak.",
                         Ingredient.FlourType.SPELT, 14.5, null, 58.0, 68.0, 0.70,
                         List.of(PizzaStyle.FOCACCIA, PizzaStyle.PIZZA_BIANCA)),
                         
                 // --------------- INNE EUROPEJSKIE ---------------
-                createFlour("Weizenmehl Type 405", "Diamant", "Niemcy",
+                createFlour("Weizenmehl Type 405", "Diamant", AppConstants.COUNTRY_GERMANY,
                         "Niemiecka mąka pszenna typ 405 - odpowiednik włoskiego tipo 00.",
                         Ingredient.FlourType.TYPE_00, 11.0, null, 55.0, 62.0, 0.405,
                         List.of(PizzaStyle.NEW_YORK)),
                         
-                createFlour("Weizenmehl Type 550", "Aurora", "Niemcy",
+                createFlour("Weizenmehl Type 550", "Aurora", AppConstants.COUNTRY_GERMANY,
                         "Niemiecka mąka typ 550 - bardziej uniwersalna, do chleba i pizzy.",
                         Ingredient.FlourType.ALL_PURPOSE, 11.5, null, 58.0, 65.0, 0.55,
                         List.of(PizzaStyle.NEW_YORK, PizzaStyle.FOCACCIA)),
                         
-                createFlour("Farine T55", "Grands Moulins de Paris", "Francja",
+                createFlour("Farine T55", "Grands Moulins de Paris", AppConstants.COUNTRY_FRANCE,
                         "Francuska mąka T55 używana w boulangerie. Dobra do pizzy domowej.",
                         Ingredient.FlourType.ALL_PURPOSE, 11.0, null, 55.0, 62.0, 0.55,
                         List.of(PizzaStyle.NEW_YORK)),
                         
-                createFlour("Shipton Mill Tipo 00", "Shipton Mill", "Wielka Brytania",
+                createFlour("Shipton Mill Tipo 00", "Shipton Mill", AppConstants.COUNTRY_UK,
                         "Brytyjska mąka tipo 00 z organicznej pszenicy. Mielona na kamieniu.",
                         Ingredient.FlourType.TYPE_00, 11.5, 230.0, 55.0, 63.0, 0.55,
                         List.of(PizzaStyle.NEAPOLITAN, PizzaStyle.NEW_YORK))
@@ -447,69 +447,69 @@ public class DataInitializer implements CommandLineRunner {
     private List<Ingredient> initializeWaters() {
         List<Ingredient> waters = Arrays.asList(
                 // --------------- POLSKIE WODY ---------------
-                createWater("Żywiec Zdrój", "Żywiec Zdrój", "Polska",
+                createWater("Żywiec Zdrój", "Żywiec Zdrój", AppConstants.COUNTRY_POLAND,
                         "Polska woda źródlana z Beskidów o umiarkowanej mineralizacji. " +
                         "Neutralna dla fermentacji, idealna do codziennego użytku.",
                         120.0, Ingredient.HardnessLevel.SOFT, 7.4, 350.0),
                         
-                createWater("Cisowianka Perlage", "Cisowianka", "Polska",
+                createWater("Cisowianka Perlage", "Cisowianka", AppConstants.COUNTRY_POLAND,
                         "Polska woda mineralna z Cieszyna o średniej twardości.",
                         200.0, Ingredient.HardnessLevel.MEDIUM, 7.6, 540.0),
                         
-                createWater("Nałęczowianka", "Nałęczowianka", "Polska",
+                createWater("Nałęczowianka", "Nałęczowianka", AppConstants.COUNTRY_POLAND,
                         "Polska woda mineralna ze źródła w Nałęczowie. Bogata w magnez.",
                         280.0, Ingredient.HardnessLevel.MEDIUM, 7.3, 700.0),
                         
-                createWater("Muszynianka", "Muszynianka", "Polska",
+                createWater("Muszynianka", "Muszynianka", AppConstants.COUNTRY_POLAND,
                         "Wysokozmineralizowana woda z Muszyny. Może spowalniać fermentację.",
                         400.0, Ingredient.HardnessLevel.HARD, 7.1, 2000.0),
                         
-                createWater("Kryniczanka", "Uzdrowisko Krynica", "Polska",
+                createWater("Kryniczanka", "Uzdrowisko Krynica", AppConstants.COUNTRY_POLAND,
                         "Woda lecznicza z Krynicy. Bardzo wysoka mineralizacja - używaj ostrożnie.",
                         500.0, Ingredient.HardnessLevel.VERY_HARD, 6.8, 4000.0),
                         
                 // --------------- WŁOSKIE/EUROPEJSKIE WODY ---------------
-                createWater("Acqua Panna", "San Pellegrino", "Włochy",
+                createWater("Acqua Panna", "San Pellegrino", AppConstants.COUNTRY_ITALY,
                         "Toskańska woda źródlana - klasyka włoskiej kuchni. Idealna do pizzy.",
                         140.0, Ingredient.HardnessLevel.SOFT, 7.9, 188.0),
                         
-                createWater("San Pellegrino", "San Pellegrino", "Włochy",
+                createWater("San Pellegrino", "San Pellegrino", AppConstants.COUNTRY_ITALY,
                         "Legendarna włoska woda gazowana. Do ciasta używaj wersji niegazowanej.",
                         200.0, Ingredient.HardnessLevel.MEDIUM, 7.7, 960.0),
                         
-                createWater("Volvic", "Volvic", "Francja",
+                createWater("Volvic", "Volvic", AppConstants.COUNTRY_FRANCE,
                         "Francuska woda wulkaniczna z Owernii, bardzo miękka. " +
                         "Idealna do pizzy - nie hamuje fermentacji.",
                         60.0, Ingredient.HardnessLevel.VERY_SOFT, 7.0, 130.0),
                         
-                createWater("Evian", "Evian", "Francja",
+                createWater("Evian", "Evian", AppConstants.COUNTRY_FRANCE,
                         "Francuska woda alpejska. Stosunkowo twarda - może lekko spowalniać drożdże.",
                         300.0, Ingredient.HardnessLevel.HARD, 7.2, 309.0),
                         
-                createWater("Vittel", "Nestlé Waters", "Francja",
+                createWater("Vittel", "Nestlé Waters", AppConstants.COUNTRY_FRANCE,
                         "Francuska woda ze źródła w Wogezach. Średnia twardość.",
                         250.0, Ingredient.HardnessLevel.MEDIUM, 7.5, 841.0),
                         
-                createWater("Gerolsteiner", "Gerolsteiner", "Niemcy",
+                createWater("Gerolsteiner", "Gerolsteiner", AppConstants.COUNTRY_GERMANY,
                         "Niemiecka woda mineralna bogata w wapń i magnez. Twarda woda.",
                         350.0, Ingredient.HardnessLevel.HARD, 6.5, 2527.0),
                         
                 // --------------- WODY SPECJALNE ---------------
-                createWater("Woda kranowa (filtrowana)", "Lokalna", "Polska",
+                createWater("Woda kranowa (filtrowana)", "Lokalna", AppConstants.COUNTRY_POLAND,
                         "Przeciętna polska woda kranowa po przefiltrowaniu przez węgiel aktywny. " +
                         "Parametry zależą od regionu.",
                         180.0, Ingredient.HardnessLevel.MEDIUM, 7.5, 350.0),
                         
-                createWater("Woda destylowana", "Różni producenci", "Różne",
+                createWater("Woda destylowana", AppConstants.BRAND_VARIOUS, AppConstants.COUNTRY_VARIOUS,
                         "Czysta H2O bez minerałów. NIE ZALECANA do pizzy - " +
                         "brak minerałów osłabia gluten i aktywność drożdży.",
                         0.0, Ingredient.HardnessLevel.VERY_SOFT, 7.0, 0.0),
                         
-                createWater("Woda odwrócona osmoza (RO)", "Domowa filtracja", "Różne",
+                createWater("Woda odwrócona osmoza (RO)", "Domowa filtracja", AppConstants.COUNTRY_VARIOUS,
                         "Woda z domowego filtra RO. Bardzo miękka - rozważ dodanie szczypinki soli mineralnej.",
                         20.0, Ingredient.HardnessLevel.VERY_SOFT, 7.0, 20.0),
                         
-                createWater("Woda z NYC (typ)", "NYC Water", "USA",
+                createWater("Woda z NYC (typ)", "NYC Water", AppConstants.COUNTRY_USA,
                         "Słynna nowojorska woda - sekret pizzy nowojorskiej. " +
                         "Bardzo miękka z Catskills. Można naśladować mieszając RO z odrobiną minerałów.",
                         50.0, Ingredient.HardnessLevel.VERY_SOFT, 7.2, 65.0)
@@ -523,33 +523,33 @@ public class DataInitializer implements CommandLineRunner {
      */
     private List<Ingredient> initializeYeasts() {
         List<Ingredient> yeasts = Arrays.asList(
-                createYeast("Drożdże świeże piekarskie", "Lesaffre", "Francja",
+                createYeast("Drożdże świeże piekarskie", "Lesaffre", AppConstants.COUNTRY_FRANCE,
                         "Klasyczne drożdże świeże (prasowane). Najbardziej aktywne, najlepszy smak. " +
                         "Przechowuj w lodówce do 2 tygodni. 1g świeżych ≈ 0.33g suszonych instant.",
                         Ingredient.YeastVariety.FRESH, 1.0, 14, true),
                         
-                createYeast("Drożdże instant (Saf-Instant Red)", "Lesaffre", "Francja",
+                createYeast("Drożdże instant (Saf-Instant Red)", "Lesaffre", AppConstants.COUNTRY_FRANCE,
                         "Drożdże suszone instant - dodawać bezpośrednio do mąki. " +
                         "Czerwona etykieta dla standardowych ciast. Długi termin przydatności.",
                         Ingredient.YeastVariety.INSTANT_DRY, 0.33, 365, false),
                         
-                createYeast("Drożdże instant (Saf-Instant Gold)", "Lesaffre", "Francja",
+                createYeast("Drożdże instant (Saf-Instant Gold)", "Lesaffre", AppConstants.COUNTRY_FRANCE,
                         "Drożdże instant do ciast słodkich/tłustych. " +
                         "Złota etykieta - odporne na cukier i tłuszcz.",
                         Ingredient.YeastVariety.INSTANT_DRY, 0.33, 365, false),
                         
-                createYeast("Drożdże suche aktywne (ADY)", "Fleischmann's", "USA",
+                createYeast("Drożdże suche aktywne (ADY)", "Fleischmann's", AppConstants.COUNTRY_USA,
                         "Aktywne drożdże suche - wymagają aktywacji w ciepłej wodzie (35-40°C) przez 10 min. " +
                         "Wolniejsze niż instant ale łatwiejsze do kontroli.",
                         Ingredient.YeastVariety.ACTIVE_DRY, 0.40, 365, false),
                         
-                createYeast("Zakwas pszenny (Lievito Madre)", "Domowy", "Włochy",
+                createYeast("Zakwas pszenny (Lievito Madre)", "Domowy", AppConstants.COUNTRY_ITALY,
                         "Włoski zakwas pszenny - tradycyjne lievito madre. " +
                         "Wymaga regularnego karmienia. Daje najlepszy smak i strawność. " +
                         "Używaj 15-25% w stosunku do mąki.",
                         Ingredient.YeastVariety.SOURDOUGH, 0.0, 0, true),
                         
-                createYeast("Zakwas żytni", "Domowy", "Polska",
+                createYeast("Zakwas żytni", "Domowy", AppConstants.COUNTRY_POLAND,
                         "Tradycyjny polski zakwas żytni. Można używać do pizzy dla głębszego smaku. " +
                         "Dodaj 10-15% do mąki pszennej.",
                         Ingredient.YeastVariety.SOURDOUGH, 0.0, 0, true)
@@ -563,30 +563,30 @@ public class DataInitializer implements CommandLineRunner {
      */
     private List<Ingredient> initializeSalts() {
         List<Ingredient> salts = Arrays.asList(
-                createSalt("Sól morska drobna", "Różni", "Różne",
+                createSalt("Sól morska drobna", AppConstants.BRAND_VARIOUS, AppConstants.COUNTRY_VARIOUS,
                         "Standardowa drobna sól morska. Łatwo się rozpuszcza. Podstawowy wybór.",
                         Ingredient.SaltType.SEA_SALT, 38.0, false),
                         
-                createSalt("Sól morska gruboziarnista", "Różni", "Różne",
+                createSalt("Sól morska gruboziarnista", AppConstants.BRAND_VARIOUS, AppConstants.COUNTRY_VARIOUS,
                         "Gruboziarnista sól morska - wolniej się rozpuszcza. " +
                         "Dodawaj na końcu mieszania lub rozpuść wcześniej w wodzie.",
                         Ingredient.SaltType.SEA_SALT, 38.0, false),
                         
-                createSalt("Sól himalajska różowa", "Różni", "Pakistan",
+                createSalt("Sól himalajska różowa", AppConstants.BRAND_VARIOUS, AppConstants.COUNTRY_PAKISTAN,
                         "Sól himalajska z naturalnym różowym kolorem. Bogata w minerały.",
                         Ingredient.SaltType.HIMALAYAN, 36.8, false),
                         
-                createSalt("Fleur de Sel", "Guérande", "Francja",
+                createSalt("Fleur de Sel", "Guérande", AppConstants.COUNTRY_FRANCE,
                         "Luksusowa francuska 'kwiat soli'. Ręcznie zbierana. " +
                         "Idealna jako wykończenie na gotowej pizzy.",
                         Ingredient.SaltType.FLEUR_DE_SEL, 33.0, false),
                         
-                createSalt("Sól koszerna (kosher salt)", "Morton", "USA",
+                createSalt("Sól koszerna (kosher salt)", "Morton", AppConstants.COUNTRY_USA,
                         "Amerykańska sól koszerna - większe płatki, łatwiejsza do odmierzania. " +
                         "Używaj 1.5x więcej objętościowo niż zwykłej soli.",
                         Ingredient.SaltType.KOSHER, 39.0, true),
                         
-                createSalt("Sale Fino di Sicilia", "Trapani", "Włochy",
+                createSalt("Sale Fino di Sicilia", "Trapani", AppConstants.COUNTRY_ITALY,
                         "Sycylijska sól morska - tradycja od rzymskich czasów. " +
                         "Klasyczny wybór do włoskiej pizzy.",
                         Ingredient.SaltType.SEA_SALT, 38.5, false)

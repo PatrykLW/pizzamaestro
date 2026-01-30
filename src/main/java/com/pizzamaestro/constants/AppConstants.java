@@ -19,6 +19,30 @@ public final class AppConstants {
     public static final String LANGUAGE_ENGLISH = "en";
     
     // ===============================================
+    // COUNTRIES
+    // ===============================================
+    public static final String COUNTRY_ITALY = "Włochy";
+    public static final String COUNTRY_POLAND = "Polska";
+    public static final String COUNTRY_USA = "USA";
+    public static final String COUNTRY_FRANCE = "Francja";
+    public static final String COUNTRY_GERMANY = "Niemcy";
+    public static final String COUNTRY_UK = "Wielka Brytania";
+    public static final String COUNTRY_PAKISTAN = "Pakistan";
+    public static final String COUNTRY_VARIOUS = "Różne";
+    
+    // ===============================================
+    // FLOUR BRANDS
+    // ===============================================
+    public static final String BRAND_CAPUTO = "Caputo";
+    public static final String BRAND_LE_5_STAGIONI = "Le 5 Stagioni";
+    public static final String BRAND_MOLINO_GRASSI = "Molino Grassi";
+    public static final String BRAND_DALLAGIOVANNA = "Dallagiovanna";
+    public static final String BRAND_LUBELLA = "Lubella";
+    public static final String BRAND_KING_ARTHUR = "King Arthur";
+    public static final String BRAND_GENERAL_MILLS = "General Mills";
+    public static final String BRAND_VARIOUS = "Różni";
+    
+    // ===============================================
     // GRAIN TYPES
     // ===============================================
     public static final String GRAIN_WHEAT = "pszenna";
