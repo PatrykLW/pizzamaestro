@@ -492,7 +492,7 @@ const CalculatorPage: React.FC = () => {
   }, [flourMix, useFlourMix]);
 
   // Automatycznie dobierz metodę fermentacji na podstawie czasu
-  const roomTemperature = watch('roomTemperature');
+  // roomTemperature jest już zadeklarowane wyżej (linia ~205)
   
   useEffect(() => {
     if (!fermentationHours) return;
