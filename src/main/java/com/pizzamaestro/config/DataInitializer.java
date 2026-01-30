@@ -148,10 +148,72 @@ public class DataInitializer implements CommandLineRunner {
                 .build();
         userRepository.save(premiumUser);
         
-        log.info("Utworzono 3 użytkowników testowych:");
-        log.info("  - admin@pizzamaestro.pl / Admin123!@#");
-        log.info("  - test@pizzamaestro.pl / Test123!@#");
-        log.info("  - premium@pizzamaestro.pl / Premium123!@#");
+        // USER PRO
+        User proUser = User.builder()
+                .email("pro@pizzamaestro.pl")
+                .password(passwordEncoder.encode("Pro123!@#"))
+                .firstName("Marek")
+                .lastName("Wiśniewski")
+                .phoneNumber("+48111222333")
+                .phoneVerified(true)
+                .roles(Set.of(User.Role.ROLE_USER, User.Role.ROLE_PREMIUM))
+                .accountType(User.AccountType.PRO)
+                .premiumExpiresAt(LocalDateTime.of(2031, 12, 31, 23, 59))
+                .enabled(true)
+                .emailVerified(true)
+                .preferences(User.UserPreferences.builder()
+                        .language("pl")
+                        .theme("dark")
+                        .temperatureUnit(User.TemperatureUnit.CELSIUS)
+                        .weightUnit(User.WeightUnit.GRAMS)
+                        .emailNotifications(true)
+                        .smsNotifications(true)
+                        .pushNotifications(true)
+                        .defaultPizzaStyle(PizzaStyle.NEAPOLITAN)
+                        .build())
+                .usageStats(User.UsageStats.builder()
+                        .totalCalculations(200)
+                        .calculationsThisMonth(35)
+                        .totalPizzasBaked(150)
+                        .smsUsedThisMonth(15)
+                        .lastCalculationAt(LocalDateTime.now())
+                        .monthResetAt(LocalDateTime.now())
+                        .build())
+                .build();
+        userRepository.save(proUser);
+        
+        // USER do testów (simple)
+        User user = User.builder()
+                .email("user@pizzamaestro.pl")
+                .password(passwordEncoder.encode("User123!@#"))
+                .firstName("Piotr")
+                .lastName("Zieliński")
+                .roles(Set.of(User.Role.ROLE_USER))
+                .accountType(User.AccountType.FREE)
+                .enabled(true)
+                .emailVerified(true)
+                .preferences(User.UserPreferences.builder()
+                        .language("pl")
+                        .theme("light")
+                        .temperatureUnit(User.TemperatureUnit.CELSIUS)
+                        .weightUnit(User.WeightUnit.GRAMS)
+                        .defaultPizzaStyle(PizzaStyle.NEAPOLITAN)
+                        .build())
+                .usageStats(User.UsageStats.builder()
+                        .totalCalculations(0)
+                        .calculationsThisMonth(0)
+                        .totalPizzasBaked(0)
+                        .monthResetAt(LocalDateTime.now())
+                        .build())
+                .build();
+        userRepository.save(user);
+        
+        log.info("Utworzono 5 użytkowników testowych:");
+        log.info("  - admin@pizzamaestro.pl / Admin123!@# (ADMIN, PRO)");
+        log.info("  - test@pizzamaestro.pl / Test123!@# (USER, FREE)");
+        log.info("  - premium@pizzamaestro.pl / Premium123!@# (USER, PREMIUM)");
+        log.info("  - pro@pizzamaestro.pl / Pro123!@# (USER, PRO)");
+        log.info("  - user@pizzamaestro.pl / User123!@# (USER, FREE)");
     }
     
     private void initializeIngredients() {

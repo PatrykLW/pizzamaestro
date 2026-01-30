@@ -607,8 +607,14 @@ public class DoughCalculatorService {
         
         List<FlourMixParameters.FlourPortion> portions = new ArrayList<>();
         
+        // Optymalizacja N+1 - pobierz wszystkie mąki jednym zapytaniem
+        List<String> flourIds = flourMix.stream()
+                .map(CalculationRequest.FlourMixEntry::getFlourId)
+                .collect(java.util.stream.Collectors.toList());
+        java.util.Map<String, Ingredient> flourMap = ingredientService.findAllByIdsAsMap(flourIds);
+        
         for (CalculationRequest.FlourMixEntry entry : flourMix) {
-            Ingredient flour = ingredientService.findById(entry.getFlourId());
+            Ingredient flour = flourMap.get(entry.getFlourId());
             if (flour == null || flour.getFlourParameters() == null) {
                 log.warn("⚠️ Nie znaleziono mąki o ID: {}", entry.getFlourId());
                 continue;

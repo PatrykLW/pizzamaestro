@@ -51,6 +51,7 @@ public class ActivePizza {
     /**
      * Docelowa godzina wypieku
      */
+    @Indexed
     private LocalDateTime targetBakeTime;
 
     /**
@@ -67,6 +68,7 @@ public class ActivePizza {
     /**
      * Status aktywnej pizzy
      */
+    @Indexed
     @Builder.Default
     private ActivePizzaStatus status = ActivePizzaStatus.PLANNING;
 

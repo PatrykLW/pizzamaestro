@@ -8,8 +8,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Serwis zarządzania składnikami (mąki, wody, itp.).
@@ -17,6 +21,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional(readOnly = true)
 public class IngredientService {
     
     private final IngredientRepository ingredientRepository;
@@ -115,6 +120,24 @@ public class IngredientService {
     }
     
     /**
+     * Pobiera wiele składników po ID (optymalizacja N+1).
+     */
+    public List<Ingredient> findAllByIds(List<String> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return List.of();
+        }
+        return ingredientRepository.findAllById(ids);
+    }
+    
+    /**
+     * Pobiera wiele składników jako mapę ID -> Ingredient (optymalizacja N+1).
+     */
+    public Map<String, Ingredient> findAllByIdsAsMap(List<String> ids) {
+        return findAllByIds(ids).stream()
+                .collect(Collectors.toMap(Ingredient::getId, Function.identity()));
+    }
+    
+    /**
      * Wyszukuje składniki po nazwie.
      */
     public List<Ingredient> searchByName(String name) {
@@ -124,6 +147,7 @@ public class IngredientService {
     /**
      * Dodaje nowy składnik (admin).
      */
+    @Transactional
     public Ingredient addIngredient(Ingredient ingredient) {
         ingredient.setActive(true);
         ingredient.setVerified(false);
@@ -133,6 +157,7 @@ public class IngredientService {
     /**
      * Aktualizuje składnik (admin).
      */
+    @Transactional
     public Ingredient updateIngredient(String id, Ingredient updates) {
         Ingredient ingredient = findById(id);
         
@@ -148,6 +173,7 @@ public class IngredientService {
     /**
      * Usuwa składnik (soft delete).
      */
+    @Transactional
     public void deleteIngredient(String id) {
         Ingredient ingredient = findById(id);
         ingredient.setActive(false);
@@ -157,6 +183,7 @@ public class IngredientService {
     /**
      * Weryfikuje składnik (admin).
      */
+    @Transactional
     public Ingredient verifyIngredient(String id) {
         Ingredient ingredient = findById(id);
         ingredient.setVerified(true);

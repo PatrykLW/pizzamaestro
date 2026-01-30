@@ -106,7 +106,27 @@ public class JwtTokenProvider {
     }
     
     private SecretKey getSigningKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(jwtSecret);
+        // Użyj secret bezpośrednio jako bytes (UTF-8) jeśli nie jest Base64
+        // lub dekoduj jeśli jest poprawnym Base64
+        byte[] keyBytes;
+        try {
+            keyBytes = Decoders.BASE64.decode(jwtSecret);
+        } catch (IllegalArgumentException e) {
+            // Secret nie jest w formacie Base64, użyj jako UTF-8
+            keyBytes = jwtSecret.getBytes(java.nio.charset.StandardCharsets.UTF_8);
+        }
+        
+        // Upewnij się, że klucz ma co najmniej 256 bitów (32 bajty)
+        if (keyBytes.length < 32) {
+            // Rozszerz klucz przez hashowanie
+            try {
+                java.security.MessageDigest digest = java.security.MessageDigest.getInstance("SHA-256");
+                keyBytes = digest.digest(keyBytes);
+            } catch (java.security.NoSuchAlgorithmException ex) {
+                throw new RuntimeException("SHA-256 not available", ex);
+            }
+        }
+        
         return Keys.hmacShaKeyFor(keyBytes);
     }
 }

@@ -492,10 +492,12 @@ const CalculatorPage: React.FC = () => {
   }, [flourMix, useFlourMix]);
 
   // Automatycznie dobierz metodę fermentacji na podstawie czasu
+  const roomTemperature = watch('roomTemperature');
+  
   useEffect(() => {
     if (!fermentationHours) return;
     
-    const roomTemp = watch('roomTemperature') || 22;
+    const roomTemp = roomTemperature || 22;
     
     // Logika automatycznego doboru metody fermentacji
     if (fermentationHours <= 6) {
@@ -520,7 +522,7 @@ const CalculatorPage: React.FC = () => {
       // Długa fermentacja - zawsze lodówka
       setValue('fermentationMethod', 'COLD_FERMENTATION');
     }
-  }, [fermentationHours, setValue, watch]);
+  }, [fermentationHours, setValue, roomTemperature]);
 
   const calculateMutation = useMutation({
     mutationFn: (data: CalculationRequest) =>

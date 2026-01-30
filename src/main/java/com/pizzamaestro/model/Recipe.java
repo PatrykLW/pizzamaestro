@@ -52,6 +52,7 @@ public class Recipe {
     
     // ===== PARAMETRY WEJŚCIOWE =====
     
+    @Indexed
     private PizzaStyle pizzaStyle;
     
     private int numberOfPizzas;

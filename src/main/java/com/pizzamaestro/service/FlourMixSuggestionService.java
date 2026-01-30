@@ -91,9 +91,8 @@ public class FlourMixSuggestionService {
                     .build();
         }
         
-        List<Ingredient> flours = flourIds.stream()
-                .map(ingredientService::findById)
-                .filter(Objects::nonNull)
+        // Optymalizacja N+1 - pobierz wszystkie mąki jednym zapytaniem
+        List<Ingredient> flours = ingredientService.findAllByIds(flourIds).stream()
                 .filter(f -> f.getFlourParameters() != null)
                 .collect(Collectors.toList());
         
