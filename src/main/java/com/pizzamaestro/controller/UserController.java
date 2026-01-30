@@ -82,7 +82,7 @@ public class UserController {
         if (request.getDefaultMixerType() != null) {
             try {
                 prefs.setDefaultMixerType(MixerType.valueOf(request.getDefaultMixerType()));
-            } catch (IllegalArgumentException _) {
+            } catch (IllegalArgumentException ignored) {
                 log.warn("⚠️ Nieznany typ miksera: {}", request.getDefaultMixerType());
             }
         }
@@ -257,7 +257,7 @@ public class UserController {
         if (request.getTemperatureUnit() != null) {
             try {
                 prefs.setTemperatureUnit(User.TemperatureUnit.valueOf(request.getTemperatureUnit()));
-            } catch (IllegalArgumentException _) {
+            } catch (IllegalArgumentException ignored) {
                 log.warn("⚠️ Nieznana jednostka temperatury: {}", request.getTemperatureUnit());
             }
         }
@@ -271,7 +271,7 @@ public class UserController {
         if (request.getDefaultPizzaStyle() != null) {
             try {
                 prefs.setDefaultPizzaStyle(PizzaStyle.valueOf(request.getDefaultPizzaStyle()));
-            } catch (IllegalArgumentException _) {
+            } catch (IllegalArgumentException ignored) {
                 log.warn("⚠️ Nieznany styl pizzy: {}", request.getDefaultPizzaStyle());
             }
         }
@@ -301,7 +301,7 @@ public class UserController {
         if (request.getDefaultMixerType() != null) {
             try {
                 prefs.setDefaultMixerType(MixerType.valueOf(request.getDefaultMixerType()));
-            } catch (IllegalArgumentException _) {
+            } catch (IllegalArgumentException ignored) {
                 log.warn("⚠️ Nieznany typ miksera: {}", request.getDefaultMixerType());
             }
         }
