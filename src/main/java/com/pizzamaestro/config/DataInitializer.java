@@ -209,11 +209,12 @@ public class DataInitializer implements CommandLineRunner {
         userRepository.save(user);
         
         log.info("Utworzono 5 użytkowników testowych:");
-        log.info("  - admin@pizzamaestro.pl / Admin123!@# (ADMIN, PRO)");
-        log.info("  - test@pizzamaestro.pl / Test123!@# (USER, FREE)");
-        log.info("  - premium@pizzamaestro.pl / Premium123!@# (USER, PREMIUM)");
-        log.info("  - pro@pizzamaestro.pl / Pro123!@# (USER, PRO)");
-        log.info("  - user@pizzamaestro.pl / User123!@# (USER, FREE)");
+        log.info("  - admin@pizzamaestro.pl (ADMIN, PRO)");
+        log.info("  - test@pizzamaestro.pl (USER, FREE)");
+        log.info("  - premium@pizzamaestro.pl (USER, PREMIUM)");
+        log.info("  - pro@pizzamaestro.pl (USER, PRO)");
+        log.info("  - user@pizzamaestro.pl (USER, FREE)");
+        log.info("  Hasła: patrz dokumentacja lub zmienne środowiskowe");
     }
     
     private void initializeIngredients() {
