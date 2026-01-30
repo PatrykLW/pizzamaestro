@@ -348,13 +348,13 @@ public class CalculatorController {
     @PostMapping("/public/flour-mix/optimize")
     @Operation(summary = "Optymalizacja proporcji dla wybranych mąk")
     public ResponseEntity<FlourMixSuggestionService.FlourMixSuggestion> optimizeFlourMix(
-            @RequestBody List<String> flourIds,
+            @Valid @RequestBody FlourIdsRequest request,
             @RequestParam(required = false) PizzaStyle style) {
         
-        log.info("⚙️ Optymalizacja miksu dla {} mąk, styl: {}", flourIds.size(), style);
+        log.info("⚙️ Optymalizacja miksu dla {} mąk, styl: {}", request.getFlourIds().size(), style);
         
         FlourMixSuggestionService.FlourMixSuggestion suggestion = 
-                flourMixSuggestionService.optimizeMix(flourIds, style);
+                flourMixSuggestionService.optimizeMix(request.getFlourIds(), style);
         
         return ResponseEntity.ok(suggestion);
     }
@@ -365,12 +365,12 @@ public class CalculatorController {
     @PostMapping("/public/flour-mix/calculate-params")
     @Operation(summary = "Obliczanie parametrów miksu mąk")
     public ResponseEntity<DoughCalculatorService.FlourMixParameters> calculateFlourMixParams(
-            @RequestBody List<CalculationRequest.FlourMixEntry> flourMix) {
+            @Valid @RequestBody FlourMixRequest request) {
         
-        log.info("📊 Obliczanie parametrów dla miksu {} mąk", flourMix.size());
+        log.info("📊 Obliczanie parametrów dla miksu {} mąk", request.getFlourMix().size());
         
         DoughCalculatorService.FlourMixParameters params = 
-                calculatorService.calculateFlourMixParameters(flourMix);
+                calculatorService.calculateFlourMixParameters(request.getFlourMix());
         
         return ResponseEntity.ok(params);
     }

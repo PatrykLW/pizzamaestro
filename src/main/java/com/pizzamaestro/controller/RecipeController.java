@@ -1,5 +1,6 @@
 package com.pizzamaestro.controller;
 
+import com.pizzamaestro.dto.request.RecipeUpdateRequest;
 import com.pizzamaestro.model.Recipe;
 import com.pizzamaestro.service.PdfExportService;
 import com.pizzamaestro.service.RecipeService;
@@ -85,7 +86,7 @@ public class RecipeController {
     @Operation(summary = "Aktualizacja receptury")
     public ResponseEntity<Recipe> updateRecipe(
             @PathVariable String id,
-            @Valid @RequestBody Recipe updates,
+            @Valid @RequestBody RecipeUpdateRequest updates,
             @AuthenticationPrincipal UserDetails userDetails) {
         
         String userId = getUserId(userDetails);
