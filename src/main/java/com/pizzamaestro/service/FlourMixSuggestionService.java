@@ -183,7 +183,7 @@ public class FlourMixSuggestionService {
     }
     
     private List<Ingredient> getAvailableFlours(List<String> availableFlourIds) {
-        List<Ingredient> allFlours = ingredientService.findAllFlours();
+        List<Ingredient> allFlours = ingredientService.getAllFlours();
         
         if (availableFlourIds == null || availableFlourIds.isEmpty()) {
             // Zwróć wszystkie dostępne mąki
@@ -373,7 +373,7 @@ public class FlourMixSuggestionService {
                 .flourMix(mix)
                 .flourDetails(details)
                 .resultProtein(Math.round(resultProtein * 10) / 10.0)
-                .resultStrength(resultStrength != null ? Math.round(resultStrength) : null)
+                .resultStrength(resultStrength != null ? (double) Math.round(resultStrength) : null)
                 .message(String.format("🎯 Miks %.0f%% %s + %.0f%% %s dla %s",
                         pct1, flour1.getName(), pct2, flour2.getName(), styleName))
                 .explanation(String.format(

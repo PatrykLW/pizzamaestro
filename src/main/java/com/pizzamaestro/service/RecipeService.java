@@ -190,7 +190,6 @@ public class RecipeService {
                 .additionalIngredients(new ArrayList<>(original.getAdditionalIngredients()))
                 .calculatedRecipe(original.getCalculatedRecipe())
                 .parentRecipeId(original.getId())
-                .version(1)
                 .build();
         
         return recipeRepository.save(clone);
@@ -347,7 +346,6 @@ public class RecipeService {
                 .waterId(request.getWaterId())
                 .additionalIngredients(additionalIngredients)
                 .plannedBakeTime(request.getPlannedBakeTime())
-                .version(1)
                 .build();
     }
     

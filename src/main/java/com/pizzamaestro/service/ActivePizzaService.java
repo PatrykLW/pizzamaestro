@@ -407,7 +407,7 @@ public class ActivePizzaService {
 
         // Krok: Wyjęcie z lodówki (2h przed dla fermentacji w lodówce)
         if (recipe.getFermentationMethod() != null && 
-            recipe.getFermentationMethod().contains("COLD")) {
+            recipe.getFermentationMethod().name().contains("COLD")) {
             LocalDateTime removeTime = bakeTime.minusHours(2);
             steps.add(0, ScheduledStep.builder()
                     .stepNumber(stepNumber++)
@@ -421,7 +421,7 @@ public class ActivePizzaService {
         }
 
         // Krok: Kulkowanie (po fermentacji w bloku)
-        int fermentationHours = recipe.getTotalFermentationHours() != null 
+        int fermentationHours = recipe.getTotalFermentationHours() > 0 
                 ? recipe.getTotalFermentationHours() 
                 : 24;
         LocalDateTime ballTime = bakeTime.minusHours(Math.max(4, fermentationHours / 3));

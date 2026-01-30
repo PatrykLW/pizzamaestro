@@ -735,7 +735,6 @@ public class DataInitializer implements CommandLineRunner {
                 .rating(5)
                 .feedback("Cornicione puszysty, spód chrupiący. Idealna pizza!")
                 .tags(List.of("neapolitańska", "pierwsza", "udana"))
-                .version(1)
                 .build();
         recipeRepository.save(recipe1);
         
@@ -776,7 +775,6 @@ public class DataInitializer implements CommandLineRunner {
                 .notes("Poolish dał niesamowity smak! Ciasto bardzo lekkie.")
                 .rating(4)
                 .tags(List.of("rzymska", "poolish", "eksperyment"))
-                .version(1)
                 .build();
         recipeRepository.save(recipe2);
         
@@ -814,7 +812,6 @@ public class DataInitializer implements CommandLineRunner {
                 .notes("Sprawdzony przepis na imprezy. Wszyscy pytają o recepturę!")
                 .rating(5)
                 .tags(List.of("focaccia", "impreza", "ulubiona"))
-                .version(1)
                 .build();
         recipeRepository.save(recipe3);
         

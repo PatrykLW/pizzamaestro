@@ -1,6 +1,8 @@
 package com.pizzamaestro.service;
 
 import com.pizzamaestro.constants.CalculatorConstants;
+import static com.pizzamaestro.constants.CalculatorConstants.BASE_HUMIDITY;
+import static com.pizzamaestro.constants.CalculatorConstants.BASE_ALTITUDE;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

@@ -144,7 +144,7 @@ public class CalendarExportService {
 
         String uid = UUID.randomUUID().toString() + "@pizzamaestro.pl";
         LocalDateTime start = step.getScheduledTime();
-        LocalDateTime end = start.plusMinutes(step.getDurationMinutes() != null ? step.getDurationMinutes() : 15);
+        LocalDateTime end = start.plusMinutes(step.getDurationMinutes() > 0 ? step.getDurationMinutes() : 15);
         
         ics.append("BEGIN:VEVENT\r\n");
         ics.append("UID:").append(uid).append("\r\n");

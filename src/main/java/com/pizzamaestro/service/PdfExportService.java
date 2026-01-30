@@ -47,8 +47,8 @@ public class PdfExportService {
                 yPosition = drawTitle(content, recipe.getName(), yPosition);
                 
                 // Podtytuł ze stylem
-                if (recipe.getPizzaStyleName() != null) {
-                    yPosition = drawSubtitle(content, "Styl: " + recipe.getPizzaStyleName(), yPosition);
+                if (recipe.getPizzaStyle() != null) {
+                    yPosition = drawSubtitle(content, "Styl: " + recipe.getPizzaStyle().getDisplayName(), yPosition);
                 }
                 
                 // Linia oddzielająca
@@ -71,25 +71,25 @@ public class PdfExportService {
                     yPosition = drawHeader(content, "Składniki", yPosition);
                     Recipe.CalculatedRecipe calc = recipe.getCalculatedRecipe();
                     
-                    if (calc.getFlourGrams() != null) {
+                    if (calc.getFlourGrams() > 0) {
                         yPosition = drawIngredient(content, "Mąka", calc.getFlourGrams(), "g", yPosition);
                     }
-                    if (calc.getWaterGrams() != null) {
+                    if (calc.getWaterGrams() > 0) {
                         yPosition = drawIngredient(content, "Woda", calc.getWaterGrams(), "g", yPosition);
                     }
-                    if (calc.getSaltGrams() != null) {
+                    if (calc.getSaltGrams() > 0) {
                         yPosition = drawIngredient(content, "Sól", calc.getSaltGrams(), "g", yPosition);
                     }
-                    if (calc.getYeastGrams() != null) {
+                    if (calc.getYeastGrams() > 0) {
                         yPosition = drawIngredient(content, "Drożdże", calc.getYeastGrams(), "g", yPosition);
                     }
-                    if (calc.getOilGrams() != null && calc.getOilGrams() > 0) {
+                    if (calc.getOilGrams() > 0) {
                         yPosition = drawIngredient(content, "Oliwa", calc.getOilGrams(), "g", yPosition);
                     }
-                    if (calc.getSugarGrams() != null && calc.getSugarGrams() > 0) {
+                    if (calc.getSugarGrams() > 0) {
                         yPosition = drawIngredient(content, "Cukier", calc.getSugarGrams(), "g", yPosition);
                     }
-                    if (calc.getTotalDoughWeight() != null) {
+                    if (calc.getTotalDoughWeight() > 0) {
                         yPosition -= 5;
                         yPosition = drawText(content, "Całkowita waga ciasta: " + calc.getTotalDoughWeight() + " g", yPosition);
                     }
