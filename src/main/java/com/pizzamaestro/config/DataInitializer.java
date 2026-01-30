@@ -26,6 +26,7 @@ import java.util.Set;
  * Tworzy użytkowników testowych, składniki i przykładowe receptury.
  */
 @Component
+@RequiredArgsConstructor
 @Slf4j
 public class DataInitializer implements CommandLineRunner {
     

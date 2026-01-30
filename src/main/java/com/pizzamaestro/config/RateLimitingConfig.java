@@ -47,6 +47,7 @@ public class RateLimitingConfig {
     }
     
     @Component
+    @Slf4j
     public static class RateLimitFilter implements Filter {
         
         // Rate limit buckets: IP -> bucket

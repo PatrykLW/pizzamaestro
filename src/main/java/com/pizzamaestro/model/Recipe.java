@@ -138,8 +138,6 @@ public class Recipe {
     
     private String parentRecipeId; // jeśli to kopia/wersja innej receptury
     
-    private int version;
-    
     // ===== INNER CLASSES =====
     
     /**

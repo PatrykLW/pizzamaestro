@@ -25,7 +25,7 @@
         <npm.version>10.2.3</npm.version>
         <frontend-maven-plugin.version>2.0.0</frontend-maven-plugin.version>
         <jjwt.version>0.12.6</jjwt.version>
-        <lombok.version>1.18.30</lombok.version>
+        <lombok.version>1.18.34</lombok.version>
         <!-- Domyślnie buduj frontend, w Docker pomiń (frontend budowany osobno) -->
         <skip.frontend>false</skip.frontend>
     </properties>
@@ -105,7 +105,8 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <optional>true</optional>
+            <version>${lombok.version}</version>
+            <scope>provided</scope>
         </dependency>
         
         <!-- DevTools -->
@@ -220,9 +221,12 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
                 <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
+                    <release>${java.version}</release>
+                    <compilerArgs>
+                        <arg>-parameters</arg>
+                    </compilerArgs>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.projectlombok</groupId>

@@ -57,6 +57,7 @@ public class RequestLoggingConfig {
      */
     @Component
     @Order(Ordered.HIGHEST_PRECEDENCE)
+    @Slf4j
     public static class DetailedLoggingFilter extends OncePerRequestFilter {
         
         @Override
