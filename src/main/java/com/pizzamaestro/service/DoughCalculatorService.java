@@ -30,6 +30,8 @@ import java.util.List;
 public class DoughCalculatorService {
     
     private final FermentationStrategyFactory fermentationStrategyFactory;
+    private final IngredientService ingredientService;
+    private final EnvironmentalCorrectionService environmentalCorrectionService;
     
     /**
      * Wykonuje kalkulację receptury ciasta na pizzę.
@@ -569,5 +571,143 @@ public class DoughCalculatorService {
     private double round(double value, int places) {
         double factor = Math.pow(10, places);
         return Math.round(value * factor) / factor;
+    }
+    
+    // ========================================
+    // OBSŁUGA MIKSÓW MĄK
+    // ========================================
+    
+    /**
+     * Oblicza średnią ważoną parametrów dla miksu mąk.
+     * 
+     * @param flourMix lista mąk z procentami
+     * @return parametry miksu (średnia ważona białka, W, P/L, absorpcja)
+     */
+    public FlourMixParameters calculateFlourMixParameters(List<CalculationRequest.FlourMixEntry> flourMix) {
+        if (flourMix == null || flourMix.isEmpty()) {
+            return null;
+        }
+        
+        double totalPercentage = flourMix.stream()
+                .mapToDouble(CalculationRequest.FlourMixEntry::getPercentage)
+                .sum();
+        
+        if (Math.abs(totalPercentage - 100.0) > 0.1) {
+            log.warn("⚠️ Suma procentów mąk ({}) nie równa się 100%", totalPercentage);
+        }
+        
+        double weightedProtein = 0.0;
+        double weightedStrength = 0.0;
+        double weightedExtensibility = 0.0;
+        double weightedHydrationMin = 0.0;
+        double weightedHydrationMax = 0.0;
+        
+        int strengthCount = 0;
+        int extensibilityCount = 0;
+        
+        List<FlourMixParameters.FlourPortion> portions = new ArrayList<>();
+        
+        for (CalculationRequest.FlourMixEntry entry : flourMix) {
+            Ingredient flour = ingredientService.findById(entry.getFlourId());
+            if (flour == null || flour.getFlourParameters() == null) {
+                log.warn("⚠️ Nie znaleziono mąki o ID: {}", entry.getFlourId());
+                continue;
+            }
+            
+            double weight = entry.getPercentage() / 100.0;
+            Ingredient.FlourParameters params = flour.getFlourParameters();
+            
+            weightedProtein += params.getProteinContent() * weight;
+            weightedHydrationMin += params.getRecommendedHydrationMin() * weight;
+            weightedHydrationMax += params.getRecommendedHydrationMax() * weight;
+            
+            if (params.getStrength() != null) {
+                weightedStrength += params.getStrength() * weight;
+                strengthCount++;
+            }
+            
+            if (params.getExtensibility() != null) {
+                weightedExtensibility += params.getExtensibility() * weight;
+                extensibilityCount++;
+            }
+            
+            portions.add(FlourMixParameters.FlourPortion.builder()
+                    .flourId(flour.getId())
+                    .flourName(flour.getName())
+                    .brand(flour.getBrand())
+                    .percentage(entry.getPercentage())
+                    .proteinContent(params.getProteinContent())
+                    .strength(params.getStrength())
+                    .build());
+        }
+        
+        return FlourMixParameters.builder()
+                .portions(portions)
+                .averageProtein(round(weightedProtein, 1))
+                .averageStrength(strengthCount > 0 ? round(weightedStrength, 0) : null)
+                .averageExtensibility(extensibilityCount > 0 ? round(weightedExtensibility, 2) : null)
+                .recommendedHydrationMin(round(weightedHydrationMin, 0))
+                .recommendedHydrationMax(round(weightedHydrationMax, 0))
+                .build();
+    }
+    
+    /**
+     * Oblicza porcje mąk w gramach na podstawie miksu.
+     */
+    public List<Recipe.FlourPortion> calculateFlourPortions(
+            List<CalculationRequest.FlourMixEntry> flourMix, double totalFlourGrams) {
+        
+        if (flourMix == null || flourMix.isEmpty()) {
+            return new ArrayList<>();
+        }
+        
+        List<Recipe.FlourPortion> portions = new ArrayList<>();
+        
+        for (CalculationRequest.FlourMixEntry entry : flourMix) {
+            Ingredient flour = ingredientService.findById(entry.getFlourId());
+            String flourName = flour != null ? 
+                    flour.getName() + (flour.getBrand() != null ? " (" + flour.getBrand() + ")" : "") :
+                    "Nieznana mąka";
+            
+            double grams = totalFlourGrams * (entry.getPercentage() / 100.0);
+            
+            portions.add(Recipe.FlourPortion.builder()
+                    .flourId(entry.getFlourId())
+                    .flourName(flourName)
+                    .percentage(entry.getPercentage())
+                    .grams(round(grams))
+                    .build());
+        }
+        
+        return portions;
+    }
+    
+    /**
+     * Parametry obliczonego miksu mąk.
+     */
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class FlourMixParameters {
+        private List<FlourPortion> portions;
+        private double averageProtein;
+        private Double averageStrength;
+        private Double averageExtensibility;
+        private double recommendedHydrationMin;
+        private double recommendedHydrationMax;
+        
+        @Data
+        @Builder
+        @NoArgsConstructor
+        @AllArgsConstructor
+        public static class FlourPortion {
+            private String flourId;
+            private String flourName;
+            private String brand;
+            private double percentage;
+            private double proteinContent;
+            private Double strength;
+        }
     }
 }

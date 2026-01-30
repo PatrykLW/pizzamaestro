@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { Chart as ChartJS, ArcElement, Tooltip as ChartTooltip, Legend } from 'chart.js';
+import { Doughnut } from 'react-chartjs-2';
+import jsPDF from 'jspdf';
+
+// Rejestracja komponentów Chart.js
+ChartJS.register(ArcElement, ChartTooltip, Legend);
 import {
   Box,
   Container,
@@ -30,6 +36,7 @@ import {
   StepContent,
   LinearProgress,
   Autocomplete,
+  Tooltip,
   alpha,
   useTheme,
 } from '@mui/material';
@@ -53,7 +60,7 @@ import {
 } from '@mui/icons-material';
 import { useForm, Controller } from 'react-hook-form';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { calculatorApi, ingredientsApi, weatherApi, userApi, CalculationRequest, CalculationResponse, WeatherData, FermentationAdjustment } from '../services/api';
+import { calculatorApi, ingredientsApi, weatherApi, userApi, CalculationRequest, CalculationResponse, WeatherData, FermentationAdjustment, FlourMixEntry, FlourMixSuggestion, FlourMixParameters } from '../services/api';
 import { useAuthStore } from '../store/authStore';
 import { IMAGES, PIZZA_STYLE_IMAGES } from '../constants/images';
 import { motion, AnimatePresence as FramerAnimatePresence } from 'framer-motion';
@@ -102,6 +109,23 @@ const CalculatorPage: React.FC = () => {
   const [userLocation, setUserLocation] = useState<{ lat: number; lon: number } | null>(null);
   const [loadingEquipment, setLoadingEquipment] = useState(false);
   const [equipmentLoaded, setEquipmentLoaded] = useState(false);
+  
+  // Miks mąk
+  const [useFlourMix, setUseFlourMix] = useState(false);
+  const [flourMix, setFlourMix] = useState<FlourMixEntry[]>([]);
+  const [flourMixParams, setFlourMixParams] = useState<FlourMixParameters | null>(null);
+  const [flourMixSuggestion, setFlourMixSuggestion] = useState<FlourMixSuggestion | null>(null);
+  const [loadingMixSuggestion, setLoadingMixSuggestion] = useState(false);
+  
+  // Techniki ciasta
+  const [useAutolyse, setUseAutolyse] = useState(false);
+  const [autolyseMinutes, setAutolyseMinutes] = useState(30);
+  const [useStretchAndFold, setUseStretchAndFold] = useState(false);
+  const [stretchAndFoldSeries, setStretchAndFoldSeries] = useState(3);
+  const [stretchAndFoldInterval, setStretchAndFoldInterval] = useState(30);
+  
+  // Skalowanie receptury
+  const [scaledPizzaCount, setScaledPizzaCount] = useState<number | null>(null);
 
   // Zapytania do API
   const { data: styles, isLoading: stylesLoading } = useQuery({
@@ -378,6 +402,95 @@ const CalculatorPage: React.FC = () => {
     }
   }, [isAuthenticated, user, setValue]);
 
+  // === MIKS MĄK ===
+  
+  // Pobierz sugestię miksu dla wybranego stylu
+  const getSuggestedMix = useCallback(async () => {
+    if (!selectedStyle) return;
+    
+    setLoadingMixSuggestion(true);
+    try {
+      const suggestion = isAuthenticated 
+        ? await calculatorApi.suggestFlourMixWithProfile(selectedStyle)
+        : await calculatorApi.suggestFlourMix(selectedStyle);
+      
+      setFlourMixSuggestion(suggestion);
+      
+      if (suggestion.success && suggestion.flourMix) {
+        setFlourMix(suggestion.flourMix);
+        setUseFlourMix(suggestion.isMix);
+        
+        // Oblicz parametry miksu
+        if (suggestion.flourMix.length > 0) {
+          const params = await calculatorApi.calculateFlourMixParams(suggestion.flourMix);
+          setFlourMixParams(params);
+        }
+        
+        toast.success(suggestion.message);
+      }
+    } catch (error) {
+      console.error('Błąd pobierania sugestii miksu:', error);
+      toast.error('Nie udało się pobrać sugestii miksu');
+    } finally {
+      setLoadingMixSuggestion(false);
+    }
+  }, [selectedStyle, isAuthenticated]);
+
+  // Dodaj mąkę do miksu
+  const addFlourToMix = useCallback((flourId: string) => {
+    if (flourMix.some(f => f.flourId === flourId)) return;
+    
+    const newMix = [...flourMix, { flourId, percentage: 0 }];
+    // Równy podział procentów
+    const equalPercentage = 100 / newMix.length;
+    setFlourMix(newMix.map(f => ({ ...f, percentage: Math.round(equalPercentage) })));
+  }, [flourMix]);
+
+  // Usuń mąkę z miksu
+  const removeFlourFromMix = useCallback((flourId: string) => {
+    const newMix = flourMix.filter(f => f.flourId !== flourId);
+    if (newMix.length > 0) {
+      // Przelicz procenty
+      const totalRemaining = newMix.reduce((sum, f) => sum + f.percentage, 0);
+      setFlourMix(newMix.map(f => ({
+        ...f,
+        percentage: Math.round((f.percentage / totalRemaining) * 100)
+      })));
+    } else {
+      setFlourMix([]);
+    }
+  }, [flourMix]);
+
+  // Zmień procent mąki w miksie
+  const updateFlourPercentage = useCallback((flourId: string, newPercentage: number) => {
+    setFlourMix(prev => prev.map(f => 
+      f.flourId === flourId ? { ...f, percentage: newPercentage } : f
+    ));
+  }, []);
+
+  // Oblicz parametry miksu przy zmianie
+  useEffect(() => {
+    const calculateParams = async () => {
+      if (flourMix.length > 0 && useFlourMix) {
+        // Normalizuj procenty do 100%
+        const total = flourMix.reduce((sum, f) => sum + f.percentage, 0);
+        if (Math.abs(total - 100) < 1) {
+          try {
+            const params = await calculatorApi.calculateFlourMixParams(flourMix);
+            setFlourMixParams(params);
+          } catch (error) {
+            console.error('Błąd obliczania parametrów miksu:', error);
+          }
+        }
+      } else {
+        setFlourMixParams(null);
+      }
+    };
+    
+    const debounce = setTimeout(calculateParams, 500);
+    return () => clearTimeout(debounce);
+  }, [flourMix, useFlourMix]);
+
   // Automatycznie dobierz metodę fermentacji na podstawie czasu
   useEffect(() => {
     if (!fermentationHours) return;
@@ -451,6 +564,14 @@ const CalculatorPage: React.FC = () => {
       generateSchedule: data.generateSchedule,
       saveRecipe: isAuthenticated && data.saveRecipe,
       recipeName: data.recipeName || undefined,
+      // Mąka
+      flourId: !useFlourMix ? data.selectedFlourId : undefined,
+      flourMix: useFlourMix && flourMix.length > 0 ? flourMix : undefined,
+      // Techniki ciasta
+      useAutolyse: useAutolyse,
+      autolyseMinutes: useAutolyse ? autolyseMinutes : undefined,
+      stretchAndFoldSeries: useStretchAndFold ? stretchAndFoldSeries : undefined,
+      stretchAndFoldInterval: useStretchAndFold ? stretchAndFoldInterval : undefined,
     };
     calculateMutation.mutate(request);
   };
@@ -483,6 +604,142 @@ Wygenerowano na pizzamaestro.pl`;
     }
   };
 
+  // Eksport do PDF
+  const exportToPDF = () => {
+    if (!result) return;
+
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+    let y = 20;
+
+    // Nagłówek
+    doc.setFontSize(24);
+    doc.setTextColor(211, 84, 0); // Pomarańczowy
+    doc.text('PizzaMaestro', pageWidth / 2, y, { align: 'center' });
+    y += 10;
+
+    doc.setFontSize(18);
+    doc.setTextColor(0, 0, 0);
+    doc.text(`Receptura: ${result.pizzaStyleName}`, pageWidth / 2, y, { align: 'center' });
+    y += 15;
+
+    // Info
+    doc.setFontSize(12);
+    doc.setTextColor(100, 100, 100);
+    doc.text(`${result.numberOfPizzas} pizz × ${result.ballWeight}g = ${result.ingredients.totalDoughWeight}g ciasta`, pageWidth / 2, y, { align: 'center' });
+    y += 15;
+
+    // Składniki
+    doc.setFontSize(14);
+    doc.setTextColor(0, 0, 0);
+    doc.text('Składniki:', 20, y);
+    y += 8;
+
+    doc.setFontSize(11);
+    const ingredients = [
+      { name: 'Mąka', value: result.ingredients.flourGrams, percent: 100 },
+      { name: 'Woda', value: result.ingredients.waterGrams, percent: result.bakerPercentages.water },
+      { name: 'Sól', value: result.ingredients.saltGrams, percent: result.bakerPercentages.salt },
+      { name: `Drożdże (${result.ingredients.yeastType})`, value: result.ingredients.yeastGrams, percent: result.bakerPercentages.yeast },
+    ];
+    
+    if (result.ingredients.oilGrams > 0) {
+      ingredients.push({ name: 'Oliwa', value: result.ingredients.oilGrams, percent: result.bakerPercentages.oil });
+    }
+    if (result.ingredients.sugarGrams > 0) {
+      ingredients.push({ name: 'Cukier', value: result.ingredients.sugarGrams, percent: result.bakerPercentages.sugar });
+    }
+
+    ingredients.forEach(ing => {
+      doc.text(`• ${ing.name}: ${ing.value}g (${ing.percent}%)`, 25, y);
+      y += 6;
+    });
+    y += 10;
+
+    // Piec
+    doc.setFontSize(14);
+    doc.text('Wypiek:', 20, y);
+    y += 8;
+
+    doc.setFontSize(11);
+    doc.text(`• Piec: ${result.ovenInfo.ovenName}`, 25, y);
+    y += 6;
+    doc.text(`• Temperatura: ${result.ovenInfo.temperature}°C`, 25, y);
+    y += 6;
+    doc.text(`• Czas: ${Math.round(result.ovenInfo.bakingTimeSeconds / 60)} minut`, 25, y);
+    y += 15;
+
+    // Wskazówki
+    if (result.tips && result.tips.length > 0) {
+      doc.setFontSize(14);
+      doc.text('Wskazówki:', 20, y);
+      y += 8;
+
+      doc.setFontSize(10);
+      result.tips.slice(0, 3).forEach(tip => {
+        const lines = doc.splitTextToSize(`• ${tip}`, pageWidth - 45);
+        lines.forEach((line: string) => {
+          doc.text(line, 25, y);
+          y += 5;
+        });
+        y += 2;
+      });
+    }
+
+    // Stopka
+    y = doc.internal.pageSize.getHeight() - 15;
+    doc.setFontSize(9);
+    doc.setTextColor(150, 150, 150);
+    doc.text(`Wygenerowano: ${new Date().toLocaleDateString('pl-PL')} | pizzamaestro.pl`, pageWidth / 2, y, { align: 'center' });
+
+    // Zapisz PDF
+    doc.save(`receptura-${result.pizzaStyleName.toLowerCase().replace(/\s+/g, '-')}.pdf`);
+    toast.success('PDF został pobrany!');
+  };
+
+  // Udostępnianie linkiem
+  const shareRecipe = async () => {
+    if (!result) return;
+
+    const recipeData = {
+      style: result.pizzaStyle,
+      pizzas: result.numberOfPizzas,
+      ballWeight: result.ballWeight,
+      hydration: result.bakerPercentages.water,
+      salt: result.bakerPercentages.salt,
+    };
+
+    // Zakoduj dane w URL
+    const params = new URLSearchParams();
+    Object.entries(recipeData).forEach(([key, value]) => {
+      params.append(key, String(value));
+    });
+
+    const shareUrl = `${window.location.origin}/calculator?${params.toString()}`;
+
+    // Sprawdź czy Web Share API jest dostępne
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `Receptura: ${result.pizzaStyleName}`,
+          text: `Sprawdź moją recepturę na pizzę ${result.pizzaStyleName}!`,
+          url: shareUrl,
+        });
+        toast.success('Udostępniono!');
+      } catch (error) {
+        // Użytkownik anulował
+        if ((error as Error).name !== 'AbortError') {
+          navigator.clipboard.writeText(shareUrl);
+          toast.success('Link skopiowany do schowka!');
+        }
+      }
+    } else {
+      // Fallback - kopiuj do schowka
+      navigator.clipboard.writeText(shareUrl);
+      toast.success('Link skopiowany do schowka!');
+    }
+  };
+
   if (stylesLoading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
@@ -493,6 +750,26 @@ Wygenerowano na pizzamaestro.pl`;
 
   const selectedStyleData = styles?.find((s: any) => s.id === selectedStyle);
   const isPremium = user?.accountType === 'PREMIUM' || user?.accountType === 'PRO';
+  
+  // Skalowane składniki
+  const scaledIngredients = useMemo(() => {
+    if (!result || scaledPizzaCount === null || scaledPizzaCount === result.numberOfPizzas) {
+      return null;
+    }
+    
+    const scale = scaledPizzaCount / result.numberOfPizzas;
+    
+    return {
+      numberOfPizzas: scaledPizzaCount,
+      totalDoughWeight: Math.round(result.ingredients.totalDoughWeight * scale),
+      flourGrams: Math.round(result.ingredients.flourGrams * scale),
+      waterGrams: Math.round(result.ingredients.waterGrams * scale),
+      saltGrams: Math.round(result.ingredients.saltGrams * scale * 10) / 10,
+      yeastGrams: Math.round(result.ingredients.yeastGrams * scale * 10) / 10,
+      oilGrams: Math.round(result.ingredients.oilGrams * scale),
+      sugarGrams: Math.round(result.ingredients.sugarGrams * scale),
+    };
+  }, [result, scaledPizzaCount]);
 
   return (
     <Box sx={{ bgcolor: 'grey.50', minHeight: '100vh', pb: 8 }}>
@@ -864,27 +1141,187 @@ Wygenerowano na pizzamaestro.pl`;
                     </Typography>
 
                     <Grid container spacing={3}>
-                      {/* Wybór mąki */}
+                      {/* === SEKCJA MĄKI === */}
                       <Grid item xs={12}>
-                        <Controller
-                          name="selectedFlourId"
-                          control={control}
-                          render={({ field }) => (
-                            <Autocomplete
-                              options={flours || []}
-                              getOptionLabel={(option: any) => `${option.name} (${option.brand}) - ${option.flourParameters?.proteinContent || '?'}% białka`}
-                              value={flours?.find((f: any) => f.id === field.value) || null}
-                              onChange={(_, newValue) => field.onChange(newValue?.id || '')}
-                              renderInput={(params) => (
-                                <TextField
-                                  {...params}
-                                  label="🌾 Mąka (opcjonalnie)"
-                                  helperText="Wybierz mąkę lub zostaw puste dla domyślnej"
+                        <Box sx={{ 
+                          p: 3, 
+                          bgcolor: alpha(theme.palette.primary.main, 0.05), 
+                          borderRadius: 2,
+                          border: '1px solid',
+                          borderColor: alpha(theme.palette.primary.main, 0.2)
+                        }}>
+                          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                            <Typography variant="h6" fontWeight="bold">
+                              🌾 Mąka
+                            </Typography>
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                              <FormControlLabel
+                                control={
+                                  <Switch 
+                                    checked={useFlourMix} 
+                                    onChange={(e) => setUseFlourMix(e.target.checked)}
+                                    color="primary"
+                                  />
+                                }
+                                label="Miks mąk"
+                              />
+                              <Button
+                                variant="outlined"
+                                size="small"
+                                onClick={getSuggestedMix}
+                                disabled={loadingMixSuggestion}
+                                startIcon={loadingMixSuggestion ? <CircularProgress size={16} /> : <InfoIcon />}
+                              >
+                                Sugeruj dla {selectedStyleData?.name || 'stylu'}
+                              </Button>
+                            </Box>
+                          </Box>
+                          
+                          {/* Pojedyncza mąka */}
+                          {!useFlourMix && (
+                            <Controller
+                              name="selectedFlourId"
+                              control={control}
+                              render={({ field }) => (
+                                <Autocomplete
+                                  options={flours || []}
+                                  getOptionLabel={(option: any) => 
+                                    `${option.name} (${option.brand}) - ${option.flourParameters?.proteinContent || '?'}% białka${option.flourParameters?.strength ? `, W${option.flourParameters.strength}` : ''}`
+                                  }
+                                  value={flours?.find((f: any) => f.id === field.value) || null}
+                                  onChange={(_, newValue) => field.onChange(newValue?.id || '')}
+                                  renderInput={(params) => (
+                                    <TextField
+                                      {...params}
+                                      label="Wybierz mąkę"
+                                      helperText="Wybierz mąkę lub zostaw puste dla domyślnej"
+                                    />
+                                  )}
+                                  renderOption={(props, option: any) => (
+                                    <li {...props}>
+                                      <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                                        <Typography variant="body1">
+                                          {option.name} ({option.brand})
+                                        </Typography>
+                                        <Typography variant="caption" color="text.secondary">
+                                          Białko: {option.flourParameters?.proteinContent}%
+                                          {option.flourParameters?.strength && ` • W: ${option.flourParameters.strength}`}
+                                          {option.flourParameters?.recommendedHydrationMin && 
+                                            ` • Hydratacja: ${option.flourParameters.recommendedHydrationMin}-${option.flourParameters.recommendedHydrationMax}%`}
+                                        </Typography>
+                                      </Box>
+                                    </li>
+                                  )}
                                 />
                               )}
                             />
                           )}
-                        />
+                          
+                          {/* Miks mąk */}
+                          {useFlourMix && (
+                            <Box>
+                              {/* Lista mąk w miksie */}
+                              {flourMix.map((entry, index) => {
+                                const flour = flours?.find((f: any) => f.id === entry.flourId);
+                                return (
+                                  <Box key={entry.flourId} sx={{ 
+                                    display: 'flex', 
+                                    alignItems: 'center', 
+                                    gap: 2, 
+                                    mb: 2,
+                                    p: 2,
+                                    bgcolor: 'background.paper',
+                                    borderRadius: 1
+                                  }}>
+                                    <Box sx={{ flex: 1 }}>
+                                      <Typography variant="subtitle2" fontWeight="bold">
+                                        {flour?.name || 'Nieznana mąka'} ({flour?.brand})
+                                      </Typography>
+                                      <Typography variant="caption" color="text.secondary">
+                                        Białko: {flour?.flourParameters?.proteinContent}%
+                                        {flour?.flourParameters?.strength && ` • W: ${flour.flourParameters.strength}`}
+                                      </Typography>
+                                    </Box>
+                                    <Box sx={{ width: 200 }}>
+                                      <Slider
+                                        value={entry.percentage}
+                                        onChange={(_, value) => updateFlourPercentage(entry.flourId, value as number)}
+                                        min={5}
+                                        max={95}
+                                        step={5}
+                                        valueLabelDisplay="auto"
+                                        valueLabelFormat={(v) => `${v}%`}
+                                      />
+                                    </Box>
+                                    <Chip 
+                                      label={`${entry.percentage}%`}
+                                      color={entry.percentage > 50 ? 'primary' : 'default'}
+                                      size="small"
+                                    />
+                                    <IconButton 
+                                      size="small" 
+                                      onClick={() => removeFlourFromMix(entry.flourId)}
+                                      color="error"
+                                    >
+                                      <ExpandMoreIcon sx={{ transform: 'rotate(45deg)' }} />
+                                    </IconButton>
+                                  </Box>
+                                );
+                              })}
+                              
+                              {/* Dodaj mąkę do miksu */}
+                              <Autocomplete
+                                options={(flours || []).filter((f: any) => !flourMix.some(m => m.flourId === f.id))}
+                                getOptionLabel={(option: any) => `${option.name} (${option.brand})`}
+                                onChange={(_, newValue) => {
+                                  if (newValue) addFlourToMix(newValue.id);
+                                }}
+                                value={null}
+                                renderInput={(params) => (
+                                  <TextField
+                                    {...params}
+                                    label="+ Dodaj mąkę do miksu"
+                                    size="small"
+                                  />
+                                )}
+                              />
+                              
+                              {/* Parametry miksu */}
+                              {flourMixParams && (
+                                <Paper sx={{ p: 2, mt: 2, bgcolor: alpha(theme.palette.success.main, 0.1) }}>
+                                  <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
+                                    📊 Parametry miksu:
+                                  </Typography>
+                                  <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+                                    <Chip 
+                                      label={`Białko: ${flourMixParams.averageProtein}%`}
+                                      color="primary"
+                                      variant="outlined"
+                                    />
+                                    {flourMixParams.averageStrength && (
+                                      <Chip 
+                                        label={`W: ${flourMixParams.averageStrength}`}
+                                        color="secondary"
+                                        variant="outlined"
+                                      />
+                                    )}
+                                    <Chip 
+                                      label={`Hydratacja: ${flourMixParams.recommendedHydrationMin}-${flourMixParams.recommendedHydrationMax}%`}
+                                      variant="outlined"
+                                    />
+                                  </Box>
+                                </Paper>
+                              )}
+                              
+                              {/* Sugestia */}
+                              {flourMixSuggestion && flourMixSuggestion.explanation && (
+                                <Alert severity="info" sx={{ mt: 2 }}>
+                                  <Typography variant="body2">{flourMixSuggestion.explanation}</Typography>
+                                </Alert>
+                              )}
+                            </Box>
+                          )}
+                        </Box>
                       </Grid>
 
                       {/* Sól, oliwa, cukier */}
@@ -1197,6 +1634,133 @@ Wygenerowano na pizzamaestro.pl`;
                         />
                       </Grid>
 
+                      {/* === TECHNIKI CIASTA === */}
+                      <Grid item xs={12}>
+                        <Box sx={{ 
+                          p: 3, 
+                          bgcolor: alpha(theme.palette.info.main, 0.05), 
+                          borderRadius: 2,
+                          border: '1px solid',
+                          borderColor: alpha(theme.palette.info.main, 0.2)
+                        }}>
+                          <Typography variant="h6" fontWeight="bold" gutterBottom>
+                            🥖 Techniki ciasta
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                            Techniki poprawiające strukturę i smak ciasta
+                          </Typography>
+                          
+                          {/* Autoliza */}
+                          <Box sx={{ mb: 3 }}>
+                            <FormControlLabel
+                              control={
+                                <Switch 
+                                  checked={useAutolyse} 
+                                  onChange={(e) => setUseAutolyse(e.target.checked)}
+                                  color="info"
+                                />
+                              }
+                              label={
+                                <Box>
+                                  <Typography variant="subtitle2" fontWeight="bold">
+                                    Autoliza
+                                  </Typography>
+                                  <Typography variant="caption" color="text.secondary">
+                                    Odpoczynek mąki z wodą przed dodaniem drożdży i soli
+                                  </Typography>
+                                </Box>
+                              }
+                            />
+                            {useAutolyse && (
+                              <Box sx={{ mt: 2, ml: 4 }}>
+                                <Typography variant="body2" gutterBottom>
+                                  Czas autolizy: <strong>{autolyseMinutes} min</strong>
+                                </Typography>
+                                <Slider
+                                  value={autolyseMinutes}
+                                  onChange={(_, value) => setAutolyseMinutes(value as number)}
+                                  min={20}
+                                  max={90}
+                                  step={10}
+                                  marks={[
+                                    { value: 20, label: '20min' },
+                                    { value: 45, label: '45min' },
+                                    { value: 60, label: '60min' },
+                                    { value: 90, label: '90min' },
+                                  ]}
+                                />
+                                <Alert severity="info" sx={{ mt: 1 }}>
+                                  💡 Autoliza rozwija gluten bez wyrabiania. Zalecana dla wysokiej hydratacji ({'>'}65%).
+                                </Alert>
+                              </Box>
+                            )}
+                          </Box>
+                          
+                          {/* Stretch and Fold */}
+                          <Box>
+                            <FormControlLabel
+                              control={
+                                <Switch 
+                                  checked={useStretchAndFold} 
+                                  onChange={(e) => setUseStretchAndFold(e.target.checked)}
+                                  color="info"
+                                />
+                              }
+                              label={
+                                <Box>
+                                  <Typography variant="subtitle2" fontWeight="bold">
+                                    Stretch & Fold
+                                  </Typography>
+                                  <Typography variant="caption" color="text.secondary">
+                                    Delikatne składanie ciasta zamiast intensywnego wyrabiania
+                                  </Typography>
+                                </Box>
+                              }
+                            />
+                            {useStretchAndFold && (
+                              <Box sx={{ mt: 2, ml: 4 }}>
+                                <Grid container spacing={2}>
+                                  <Grid item xs={6}>
+                                    <Typography variant="body2" gutterBottom>
+                                      Liczba serii: <strong>{stretchAndFoldSeries}</strong>
+                                    </Typography>
+                                    <Slider
+                                      value={stretchAndFoldSeries}
+                                      onChange={(_, value) => setStretchAndFoldSeries(value as number)}
+                                      min={1}
+                                      max={6}
+                                      step={1}
+                                      marks
+                                    />
+                                  </Grid>
+                                  <Grid item xs={6}>
+                                    <Typography variant="body2" gutterBottom>
+                                      Przerwa: <strong>{stretchAndFoldInterval} min</strong>
+                                    </Typography>
+                                    <Slider
+                                      value={stretchAndFoldInterval}
+                                      onChange={(_, value) => setStretchAndFoldInterval(value as number)}
+                                      min={15}
+                                      max={45}
+                                      step={5}
+                                      marks={[
+                                        { value: 15, label: '15min' },
+                                        { value: 30, label: '30min' },
+                                        { value: 45, label: '45min' },
+                                      ]}
+                                    />
+                                  </Grid>
+                                </Grid>
+                                <Alert severity="success" sx={{ mt: 1 }}>
+                                  ✅ {stretchAndFoldSeries} serii co {stretchAndFoldInterval} min = {stretchAndFoldSeries * stretchAndFoldInterval} min na rozwój glutenu
+                                </Alert>
+                              </Box>
+                            )}
+                          </Box>
+                        </Box>
+                      </Grid>
+
+                      {/* Typ pieca */}
                       <Grid item xs={12}>
                         <Controller
                           name="ovenType"
@@ -1351,15 +1915,21 @@ Wygenerowano na pizzamaestro.pl`;
                     )}
                   </Box>
                   <Box sx={{ display: 'flex', gap: 1 }}>
-                    <IconButton onClick={copyToClipboard} sx={{ bgcolor: 'rgba(255,255,255,0.2)', color: 'white' }}>
-                      <CopyIcon />
-                    </IconButton>
-                    <IconButton sx={{ bgcolor: 'rgba(255,255,255,0.2)', color: 'white' }}>
-                      <ShareIcon />
-                    </IconButton>
-                    <IconButton sx={{ bgcolor: 'rgba(255,255,255,0.2)', color: 'white' }}>
-                      <PrintIcon />
-                    </IconButton>
+                    <Tooltip title="Kopiuj do schowka">
+                      <IconButton onClick={copyToClipboard} sx={{ bgcolor: 'rgba(255,255,255,0.2)', color: 'white' }}>
+                        <CopyIcon />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Udostępnij link">
+                      <IconButton onClick={shareRecipe} sx={{ bgcolor: 'rgba(255,255,255,0.2)', color: 'white' }}>
+                        <ShareIcon />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Eksportuj do PDF">
+                      <IconButton onClick={exportToPDF} sx={{ bgcolor: 'rgba(255,255,255,0.2)', color: 'white' }}>
+                        <PrintIcon />
+                      </IconButton>
+                    </Tooltip>
                   </Box>
                 </CardContent>
               </Card>
@@ -1369,27 +1939,113 @@ Wygenerowano na pizzamaestro.pl`;
                 <Grid item xs={12} md={6}>
                   <Card sx={{ height: '100%' }}>
                     <CardContent>
-                      <Typography variant="h5" fontWeight="bold" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <KitchenIcon color="primary" /> Składniki
-                      </Typography>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                        <Typography variant="h5" fontWeight="bold" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                          <KitchenIcon color="primary" /> Składniki
+                        </Typography>
+                        
+                        {/* Skalowanie */}
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                          <Typography variant="body2" color="text.secondary">
+                            Skaluj:
+                          </Typography>
+                          <IconButton 
+                            size="small" 
+                            onClick={() => setScaledPizzaCount(prev => 
+                              Math.max(1, (prev ?? result.numberOfPizzas) - 1)
+                            )}
+                          >
+                            <ExpandMoreIcon sx={{ transform: 'rotate(90deg)' }} />
+                          </IconButton>
+                          <Chip 
+                            label={`${scaledPizzaCount ?? result.numberOfPizzas} pizz`}
+                            color={scaledIngredients ? 'secondary' : 'default'}
+                            onClick={() => setScaledPizzaCount(null)}
+                          />
+                          <IconButton 
+                            size="small" 
+                            onClick={() => setScaledPizzaCount(prev => 
+                              Math.min(50, (prev ?? result.numberOfPizzas) + 1)
+                            )}
+                          >
+                            <ExpandMoreIcon sx={{ transform: 'rotate(-90deg)' }} />
+                          </IconButton>
+                        </Box>
+                      </Box>
+                      
+                      {scaledIngredients && (
+                        <Alert severity="info" sx={{ mb: 2 }}>
+                          Przeskalowano z {result.numberOfPizzas} na {scaledIngredients.numberOfPizzas} pizz
+                          {' • '}
+                          <Button size="small" onClick={() => setScaledPizzaCount(null)}>
+                            Resetuj
+                          </Button>
+                        </Alert>
+                      )}
+                      
                       <Table>
                         <TableBody>
                           {[
-                            { name: 'Mąka', value: result.ingredients.flourGrams, percent: 100, icon: '🌾' },
-                            { name: 'Woda', value: result.ingredients.waterGrams, percent: result.bakerPercentages.water, icon: '💧' },
-                            { name: 'Sól', value: result.ingredients.saltGrams, percent: result.bakerPercentages.salt, icon: '🧂' },
-                            { name: `Drożdże (${result.ingredients.yeastType})`, value: result.ingredients.yeastGrams, percent: result.bakerPercentages.yeast, icon: '🍞' },
-                            ...(result.ingredients.oilGrams > 0 ? [{ name: 'Oliwa', value: result.ingredients.oilGrams, percent: result.bakerPercentages.oil, icon: '🫒' }] : []),
-                            ...(result.ingredients.sugarGrams > 0 ? [{ name: 'Cukier', value: result.ingredients.sugarGrams, percent: result.bakerPercentages.sugar, icon: '🍬' }] : []),
+                            { 
+                              name: 'Mąka', 
+                              value: scaledIngredients?.flourGrams ?? result.ingredients.flourGrams, 
+                              original: result.ingredients.flourGrams,
+                              percent: 100, 
+                              icon: '🌾' 
+                            },
+                            { 
+                              name: 'Woda', 
+                              value: scaledIngredients?.waterGrams ?? result.ingredients.waterGrams, 
+                              original: result.ingredients.waterGrams,
+                              percent: result.bakerPercentages.water, 
+                              icon: '💧' 
+                            },
+                            { 
+                              name: 'Sól', 
+                              value: scaledIngredients?.saltGrams ?? result.ingredients.saltGrams, 
+                              original: result.ingredients.saltGrams,
+                              percent: result.bakerPercentages.salt, 
+                              icon: '🧂' 
+                            },
+                            { 
+                              name: `Drożdże (${result.ingredients.yeastType})`, 
+                              value: scaledIngredients?.yeastGrams ?? result.ingredients.yeastGrams, 
+                              original: result.ingredients.yeastGrams,
+                              percent: result.bakerPercentages.yeast, 
+                              icon: '🍞' 
+                            },
+                            ...(result.ingredients.oilGrams > 0 ? [{ 
+                              name: 'Oliwa', 
+                              value: scaledIngredients?.oilGrams ?? result.ingredients.oilGrams, 
+                              original: result.ingredients.oilGrams,
+                              percent: result.bakerPercentages.oil, 
+                              icon: '🫒' 
+                            }] : []),
+                            ...(result.ingredients.sugarGrams > 0 ? [{ 
+                              name: 'Cukier', 
+                              value: scaledIngredients?.sugarGrams ?? result.ingredients.sugarGrams, 
+                              original: result.ingredients.sugarGrams,
+                              percent: result.bakerPercentages.sugar, 
+                              icon: '🍬' 
+                            }] : []),
                           ].map((item) => (
                             <TableRow key={item.name}>
                               <TableCell sx={{ fontSize: '1.1rem' }}>
                                 {item.icon} {item.name}
                               </TableCell>
                               <TableCell align="right">
-                                <Typography variant="h6" fontWeight="bold" color="primary">
+                                <Typography 
+                                  variant="h6" 
+                                  fontWeight="bold" 
+                                  color={scaledIngredients ? 'secondary' : 'primary'}
+                                >
                                   {item.value}g
                                 </Typography>
+                                {scaledIngredients && item.value !== item.original && (
+                                  <Typography variant="caption" color="text.secondary" sx={{ textDecoration: 'line-through' }}>
+                                    {item.original}g
+                                  </Typography>
+                                )}
                               </TableCell>
                               <TableCell align="right">
                                 <Chip label={`${item.percent}%`} size="small" variant="outlined" />
@@ -1398,6 +2054,88 @@ Wygenerowano na pizzamaestro.pl`;
                           ))}
                         </TableBody>
                       </Table>
+                      
+                      <Box sx={{ mt: 2, p: 2, bgcolor: 'grey.100', borderRadius: 1 }}>
+                        <Typography variant="subtitle2" fontWeight="bold">
+                          Całkowita waga ciasta: {scaledIngredients?.totalDoughWeight ?? result.ingredients.totalDoughWeight}g
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          {scaledPizzaCount ?? result.numberOfPizzas} × {result.ballWeight}g na pizzę
+                        </Typography>
+                      </Box>
+                    </CardContent>
+                  </Card>
+                </Grid>
+
+                {/* Wykres proporcji składników */}
+                <Grid item xs={12} md={6}>
+                  <Card sx={{ height: '100%' }}>
+                    <CardContent>
+                      <Typography variant="h5" fontWeight="bold" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        📊 Proporcje (Baker's %)
+                      </Typography>
+                      <Box sx={{ maxWidth: 300, mx: 'auto', mt: 2 }}>
+                        <Doughnut
+                          data={{
+                            labels: [
+                              'Mąka (100%)',
+                              `Woda (${result.bakerPercentages.water}%)`,
+                              `Sól (${result.bakerPercentages.salt}%)`,
+                              `Drożdże (${result.bakerPercentages.yeast}%)`,
+                              ...(result.bakerPercentages.oil > 0 ? [`Oliwa (${result.bakerPercentages.oil}%)`] : []),
+                              ...(result.bakerPercentages.sugar > 0 ? [`Cukier (${result.bakerPercentages.sugar}%)`] : []),
+                            ],
+                            datasets: [{
+                              data: [
+                                100,
+                                result.bakerPercentages.water,
+                                result.bakerPercentages.salt,
+                                result.bakerPercentages.yeast,
+                                ...(result.bakerPercentages.oil > 0 ? [result.bakerPercentages.oil] : []),
+                                ...(result.bakerPercentages.sugar > 0 ? [result.bakerPercentages.sugar] : []),
+                              ],
+                              backgroundColor: [
+                                '#f5d0a9', // mąka - beżowy
+                                '#a8d8ea', // woda - niebieski
+                                '#f8f8f8', // sól - biały
+                                '#ffeaa7', // drożdże - żółty
+                                '#b8e994', // oliwa - zielony
+                                '#fd79a8', // cukier - różowy
+                              ],
+                              borderWidth: 2,
+                              borderColor: '#fff',
+                            }],
+                          }}
+                          options={{
+                            responsive: true,
+                            plugins: {
+                              legend: {
+                                position: 'bottom',
+                                labels: {
+                                  padding: 15,
+                                  usePointStyle: true,
+                                },
+                              },
+                              tooltip: {
+                                callbacks: {
+                                  label: (context) => {
+                                    const label = context.label || '';
+                                    return label;
+                                  },
+                                },
+                              },
+                            },
+                            cutout: '50%',
+                          }}
+                        />
+                      </Box>
+                      <Box sx={{ mt: 3, textAlign: 'center' }}>
+                        <Typography variant="body2" color="text.secondary">
+                          Suma: {(100 + result.bakerPercentages.water + result.bakerPercentages.salt + 
+                                  result.bakerPercentages.yeast + result.bakerPercentages.oil + 
+                                  result.bakerPercentages.sugar).toFixed(1)}% względem mąki
+                        </Typography>
+                      </Box>
                     </CardContent>
                   </Card>
                 </Grid>

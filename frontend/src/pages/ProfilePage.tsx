@@ -393,8 +393,8 @@ const ProfilePage: React.FC = () => {
                       <em>Nie ustawiono</em>
                     </MenuItem>
                     {ovens?.map((oven: any) => (
-                      <MenuItem key={oven.name || oven.id} value={oven.name || oven.id}>
-                        {oven.displayName}
+                      <MenuItem key={oven.id} value={oven.id}>
+                        {oven.name}
                       </MenuItem>
                     ))}
                   </Select>

@@ -7,6 +7,8 @@ import com.pizzamaestro.model.PizzaStyle;
 import com.pizzamaestro.model.Recipe;
 import com.pizzamaestro.security.CurrentUser;
 import com.pizzamaestro.service.DoughCalculatorService;
+import com.pizzamaestro.service.EnvironmentalCorrectionService;
+import com.pizzamaestro.service.FlourMixSuggestionService;
 import com.pizzamaestro.service.RecipeService;
 import com.pizzamaestro.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -38,6 +40,8 @@ import java.util.stream.Collectors;
 public class CalculatorController {
     
     private final DoughCalculatorService calculatorService;
+    private final EnvironmentalCorrectionService environmentalCorrectionService;
+    private final FlourMixSuggestionService flourMixSuggestionService;
     private final RecipeService recipeService;
     private final UserService userService;
     
@@ -272,6 +276,126 @@ public class CalculatorController {
                 .collect(Collectors.toList());
         
         return ResponseEntity.ok(types);
+    }
+    
+    // ========================================
+    // SUGESTIE MIKSÓW MĄK
+    // ========================================
+    
+    /**
+     * Sugeruje miks mąk dla stylu pizzy (publiczny).
+     */
+    @GetMapping("/public/flour-mix/suggest")
+    @Operation(summary = "Sugestia miksu mąk dla stylu pizzy (publiczny)")
+    public ResponseEntity<FlourMixSuggestionService.FlourMixSuggestion> suggestFlourMixPublic(
+            @RequestParam PizzaStyle style,
+            @RequestParam(required = false) List<String> availableFlourIds) {
+        
+        log.info("🌾 Sugestia miksu dla stylu: {}, dostępne mąki: {}", 
+                style, availableFlourIds != null ? availableFlourIds.size() : "wszystkie");
+        
+        FlourMixSuggestionService.FlourMixSuggestion suggestion = 
+                flourMixSuggestionService.suggestForStyle(style, availableFlourIds);
+        
+        return ResponseEntity.ok(suggestion);
+    }
+    
+    /**
+     * Sugeruje miks mąk dla stylu pizzy (zalogowany - używa mąk z profilu).
+     */
+    @GetMapping("/flour-mix/suggest")
+    @Operation(summary = "Sugestia miksu mąk dla stylu pizzy (z profilem użytkownika)")
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<FlourMixSuggestionService.FlourMixSuggestion> suggestFlourMix(
+            @RequestParam PizzaStyle style,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        
+        String userId = getUserId(userDetails);
+        var user = userService.findById(userId);
+        List<String> availableFlourIds = user.getPreferences() != null ? 
+                user.getPreferences().getAvailableFlourIds() : null;
+        
+        log.info("🌾 Sugestia miksu dla użytkownika {}, styl: {}, dostępne mąki: {}", 
+                userId, style, availableFlourIds != null ? availableFlourIds.size() : "wszystkie");
+        
+        FlourMixSuggestionService.FlourMixSuggestion suggestion = 
+                flourMixSuggestionService.suggestForStyle(style, availableFlourIds);
+        
+        return ResponseEntity.ok(suggestion);
+    }
+    
+    /**
+     * Sugeruje miks mąk dla docelowych parametrów.
+     */
+    @GetMapping("/public/flour-mix/suggest-by-params")
+    @Operation(summary = "Sugestia miksu mąk dla docelowych parametrów")
+    public ResponseEntity<FlourMixSuggestionService.FlourMixSuggestion> suggestFlourMixByParams(
+            @RequestParam(required = false) Double targetProtein,
+            @RequestParam(required = false) Double targetStrength,
+            @RequestParam(required = false) List<String> availableFlourIds) {
+        
+        log.info("🎯 Sugestia miksu dla parametrów: białko={}%, W={}", targetProtein, targetStrength);
+        
+        FlourMixSuggestionService.FlourMixSuggestion suggestion = 
+                flourMixSuggestionService.suggestForTargetParameters(targetProtein, targetStrength, availableFlourIds);
+        
+        return ResponseEntity.ok(suggestion);
+    }
+    
+    /**
+     * Optymalizuje proporcje dla listy mąk.
+     */
+    @PostMapping("/public/flour-mix/optimize")
+    @Operation(summary = "Optymalizacja proporcji dla wybranych mąk")
+    public ResponseEntity<FlourMixSuggestionService.FlourMixSuggestion> optimizeFlourMix(
+            @RequestBody List<String> flourIds,
+            @RequestParam(required = false) PizzaStyle style) {
+        
+        log.info("⚙️ Optymalizacja miksu dla {} mąk, styl: {}", flourIds.size(), style);
+        
+        FlourMixSuggestionService.FlourMixSuggestion suggestion = 
+                flourMixSuggestionService.optimizeMix(flourIds, style);
+        
+        return ResponseEntity.ok(suggestion);
+    }
+    
+    /**
+     * Oblicza parametry miksu mąk.
+     */
+    @PostMapping("/public/flour-mix/calculate-params")
+    @Operation(summary = "Obliczanie parametrów miksu mąk")
+    public ResponseEntity<DoughCalculatorService.FlourMixParameters> calculateFlourMixParams(
+            @RequestBody List<CalculationRequest.FlourMixEntry> flourMix) {
+        
+        log.info("📊 Obliczanie parametrów dla miksu {} mąk", flourMix.size());
+        
+        DoughCalculatorService.FlourMixParameters params = 
+                calculatorService.calculateFlourMixParameters(flourMix);
+        
+        return ResponseEntity.ok(params);
+    }
+    
+    // ========================================
+    // KOREKTY ŚRODOWISKOWE
+    // ========================================
+    
+    /**
+     * Oblicza korekty środowiskowe dla warunków.
+     */
+    @GetMapping("/public/environmental-corrections")
+    @Operation(summary = "Obliczanie korekt środowiskowych")
+    public ResponseEntity<EnvironmentalCorrectionService.EnvironmentalCorrections> getEnvironmentalCorrections(
+            @RequestParam(required = false) Integer humidity,
+            @RequestParam(required = false) Integer altitude,
+            @RequestParam(required = false) Double roomTemperature) {
+        
+        log.info("🌍 Obliczanie korekt środowiskowych: wilgotność={}%, wysokość={}m, temp={}°C",
+                humidity, altitude, roomTemperature);
+        
+        EnvironmentalCorrectionService.EnvironmentalCorrections corrections =
+                environmentalCorrectionService.calculateCorrections(humidity, altitude, roomTemperature);
+        
+        return ResponseEntity.ok(corrections);
     }
     
     private String getUserId(UserDetails userDetails) {

@@ -72,6 +72,45 @@ public class CalculationResponse {
         private double oilGrams;
         private double sugarGrams;
         private List<AdditionalIngredientResult> additionalIngredients;
+        
+        // Miks mąk - podział na porcje (jeśli używany miks)
+        private List<FlourPortionResult> flourPortions;
+        
+        // Parametry użytej mąki/miksu
+        private FlourParametersResult flourParameters;
+    }
+    
+    /**
+     * Wynik - porcja mąki w miksie.
+     */
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class FlourPortionResult {
+        private String flourId;
+        private String flourName;
+        private String brand;
+        private double percentage;
+        private double grams;
+        private Double proteinContent;
+        private Double strength;
+    }
+    
+    /**
+     * Wynik - parametry mąki/miksu.
+     */
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class FlourParametersResult {
+        private boolean isMix;
+        private double proteinContent;
+        private Double strength;
+        private Double extensibility;
+        private double recommendedHydrationMin;
+        private double recommendedHydrationMax;
     }
     
     /**

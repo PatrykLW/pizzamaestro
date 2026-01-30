@@ -147,12 +147,63 @@ public class CalculationRequest {
     
     private Integer prefermentFermentationHours;
     
-    // Wybrane składniki
+    // ========================================
+    // SKŁADNIKI - MĄKA
+    // ========================================
+    
+    /** Pojedyncza mąka (alternatywa dla flourMix) */
     private String flourId;
     
+    /** Miks mąk - lista mąk z procentami (alternatywa dla flourId) */
+    private List<FlourMixEntry> flourMix;
+    
+    /** Woda */
     private String waterId;
     
+    /** Dodatkowe składniki */
     private List<AdditionalIngredientRequest> additionalIngredients;
+    
+    // ========================================
+    // TECHNIKI CIASTA
+    // ========================================
+    
+    /** Czy użyć autolizy (odpoczynek mąki z wodą przed dodaniem drożdży i soli) */
+    private boolean useAutolyse;
+    
+    /** Czas autolizy w minutach (20-60) */
+    @Min(value = 20, message = "Czas autolizy musi wynosić co najmniej 20 minut")
+    @Max(value = 120, message = "Czas autolizy nie może przekroczyć 120 minut")
+    private Integer autolyseMinutes;
+    
+    /** Liczba serii stretch and fold (0-6) */
+    @Min(value = 0, message = "Liczba serii S&F nie może być ujemna")
+    @Max(value = 8, message = "Liczba serii S&F nie może przekroczyć 8")
+    private Integer stretchAndFoldSeries;
+    
+    /** Przerwa między seriami S&F w minutach */
+    @Min(value = 15, message = "Przerwa S&F musi wynosić co najmniej 15 minut")
+    @Max(value = 60, message = "Przerwa S&F nie może przekroczyć 60 minut")
+    private Integer stretchAndFoldInterval;
+    
+    /** Czy wykonać punch down (składanie ciasta) */
+    private boolean usePunchDown;
+    
+    /** Kiedy wykonać punch down - po ilu godzinach fermentacji */
+    private Integer punchDownAfterHours;
+    
+    // ========================================
+    // WARUNKI ŚRODOWISKOWE
+    // ========================================
+    
+    /** Wilgotność powietrza w % (wpływa na absorpcję mąki) */
+    @Min(value = 20, message = "Wilgotność musi wynosić co najmniej 20%")
+    @Max(value = 100, message = "Wilgotność nie może przekroczyć 100%")
+    private Integer ambientHumidity;
+    
+    /** Wysokość nad poziomem morza w metrach (wpływa na fermentację) */
+    @Min(value = 0, message = "Wysokość nie może być ujemna")
+    @Max(value = 5000, message = "Wysokość nie może przekroczyć 5000m")
+    private Integer altitudeMeters;
     
     // Harmonogram
     private LocalDateTime plannedBakeTime;
@@ -176,6 +227,23 @@ public class CalculationRequest {
     public static class AdditionalIngredientRequest {
         private String ingredientId;
         private String name;
+        private double percentage;
+    }
+    
+    /**
+     * Wpis miksu mąk - pojedyncza mąka w mieszance.
+     */
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class FlourMixEntry {
+        /** ID mąki z bazy składników */
+        private String flourId;
+        
+        /** Procent tej mąki w mieszance (suma wszystkich = 100) */
+        @DecimalMin(value = "1.0", message = "Procent mąki musi wynosić co najmniej 1%")
+        @DecimalMax(value = "100.0", message = "Procent mąki nie może przekroczyć 100%")
         private double percentage;
     }
 }

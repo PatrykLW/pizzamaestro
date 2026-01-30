@@ -81,6 +81,11 @@ function getErrorMessage(error: AxiosError<unknown>): string {
 
 // ========== API Kalkulatora ==========
 
+export interface FlourMixEntry {
+  flourId: string;
+  percentage: number;
+}
+
 export interface CalculationRequest {
   pizzaStyle: string;
   numberOfPizzas: number;
@@ -106,6 +111,48 @@ export interface CalculationRequest {
   saveRecipe: boolean;
   recipeName?: string;
   recipeDescription?: string;
+  // Miks mąk
+  flourId?: string;
+  flourMix?: FlourMixEntry[];
+  // Techniki ciasta
+  useAutolyse?: boolean;
+  autolyseMinutes?: number;
+  stretchAndFoldSeries?: number;
+  stretchAndFoldInterval?: number;
+  usePunchDown?: boolean;
+  punchDownAfterHours?: number;
+  // Warunki środowiskowe
+  ambientHumidity?: number;
+  altitudeMeters?: number;
+}
+
+export interface FlourMixSuggestion {
+  success: boolean;
+  isMix: boolean;
+  flourMix?: FlourMixEntry[];
+  flourDetails?: FlourMixDetail[];
+  resultProtein: number;
+  resultStrength?: number;
+  message: string;
+  explanation?: string;
+}
+
+export interface FlourMixDetail {
+  flourId: string;
+  flourName: string;
+  brand?: string;
+  percentage: number;
+  proteinContent: number;
+  strength?: number;
+}
+
+export interface FlourMixParameters {
+  portions: FlourMixDetail[];
+  averageProtein: number;
+  averageStrength?: number;
+  averageExtensibility?: number;
+  recommendedHydrationMin: number;
+  recommendedHydrationMax: number;
 }
 
 export interface CalculationResponse {
@@ -206,7 +253,77 @@ export const calculatorApi = {
     const response = await api.get('/api/calculator/preferment-types');
     return response.data;
   },
+  
+  // === MIKS MĄK ===
+  
+  // Sugestia miksu dla stylu (publiczna)
+  suggestFlourMix: async (style: string, availableFlourIds?: string[]): Promise<FlourMixSuggestion> => {
+    const params = new URLSearchParams({ style });
+    if (availableFlourIds && availableFlourIds.length > 0) {
+      availableFlourIds.forEach(id => params.append('availableFlourIds', id));
+    }
+    const response = await api.get(`/api/calculator/public/flour-mix/suggest?${params}`);
+    return response.data;
+  },
+  
+  // Sugestia miksu dla stylu (z profilem użytkownika)
+  suggestFlourMixWithProfile: async (style: string): Promise<FlourMixSuggestion> => {
+    const response = await api.get(`/api/calculator/flour-mix/suggest?style=${style}`);
+    return response.data;
+  },
+  
+  // Sugestia miksu dla docelowych parametrów
+  suggestFlourMixByParams: async (
+    targetProtein?: number, 
+    targetStrength?: number, 
+    availableFlourIds?: string[]
+  ): Promise<FlourMixSuggestion> => {
+    const params = new URLSearchParams();
+    if (targetProtein) params.append('targetProtein', targetProtein.toString());
+    if (targetStrength) params.append('targetStrength', targetStrength.toString());
+    if (availableFlourIds) {
+      availableFlourIds.forEach(id => params.append('availableFlourIds', id));
+    }
+    const response = await api.get(`/api/calculator/public/flour-mix/suggest-by-params?${params}`);
+    return response.data;
+  },
+  
+  // Optymalizacja proporcji dla wybranych mąk
+  optimizeFlourMix: async (flourIds: string[], style?: string): Promise<FlourMixSuggestion> => {
+    const params = style ? `?style=${style}` : '';
+    const response = await api.post(`/api/calculator/public/flour-mix/optimize${params}`, flourIds);
+    return response.data;
+  },
+  
+  // Oblicz parametry miksu
+  calculateFlourMixParams: async (flourMix: FlourMixEntry[]): Promise<FlourMixParameters> => {
+    const response = await api.post('/api/calculator/public/flour-mix/calculate-params', flourMix);
+    return response.data;
+  },
+  
+  // === KOREKTY ŚRODOWISKOWE ===
+  
+  getEnvironmentalCorrections: async (
+    humidity?: number,
+    altitude?: number,
+    roomTemperature?: number
+  ): Promise<EnvironmentalCorrections> => {
+    const params = new URLSearchParams();
+    if (humidity !== undefined) params.append('humidity', humidity.toString());
+    if (altitude !== undefined) params.append('altitude', altitude.toString());
+    if (roomTemperature !== undefined) params.append('roomTemperature', roomTemperature.toString());
+    const response = await api.get(`/api/calculator/public/environmental-corrections?${params}`);
+    return response.data;
+  },
 };
+
+export interface EnvironmentalCorrections {
+  hydrationCorrectionPercent: number;
+  yeastCorrectionPercent: number;
+  fermentationTimeCorrectionPercent: number;
+  estimatedPressureHPa: number;
+  recommendations: string[];
+}
 
 // ========== API Składników ==========
 
