@@ -24,7 +24,7 @@
         <node.version>v20.10.0</node.version>
         <npm.version>10.2.3</npm.version>
         <frontend-maven-plugin.version>1.15.0</frontend-maven-plugin.version>
-        <jjwt.version>0.12.3</jjwt.version>
+        <jjwt.version>0.13.0</jjwt.version>
         <!-- Domyślnie buduj frontend, w Docker pomiń (frontend budowany osobno) -->
         <skip.frontend>false</skip.frontend>
     </properties>
