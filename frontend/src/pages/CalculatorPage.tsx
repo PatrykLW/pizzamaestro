@@ -161,7 +161,8 @@ const CalculatorPage: React.FC = () => {
     queryFn: ingredientsApi.getFlours,
   });
 
-  const { data: waters } = useQuery({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { data: _waters } = useQuery({
     queryKey: ['waters'],
     queryFn: ingredientsApi.getWaters,
   });

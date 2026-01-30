@@ -9,14 +9,8 @@ import {
   Avatar,
   Chip,
   LinearProgress,
-  Divider,
   Skeleton,
-  CircularProgress,
   Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
   FormControl,
   InputLabel,
   Select,
@@ -83,7 +77,7 @@ const ProfilePage: React.FC = () => {
   const [notificationsForm, setNotificationsForm] = useState<UpdateNotificationsRequest>({});
 
   // Fetch equipment data
-  const { data: equipment, isLoading: equipmentLoading } = useQuery({
+  const { data: equipment } = useQuery({
     queryKey: ['equipment'],
     queryFn: userApi.getEquipment,
     enabled: !!user,

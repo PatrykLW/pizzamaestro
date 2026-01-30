@@ -20,7 +20,7 @@ import {
 import { ExpandMore } from '@mui/icons-material';
 import { useQuery } from '@tanstack/react-query';
 import { calculatorApi } from '../services/api';
-import type { PizzaStyle, PizzaStyleDefaults, PizzaStyleOven } from '../types';
+import type { PizzaStyleDefaults, PizzaStyleOven } from '../types';
 
 // Rozszerzony typ dla stylu z API (zawiera dodatkowe pola - wymagane)
 interface StyleWithDetails {

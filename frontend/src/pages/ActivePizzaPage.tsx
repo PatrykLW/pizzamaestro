@@ -10,21 +10,13 @@ import {
   IconButton,
   Chip,
   LinearProgress,
-  Divider,
   Alert,
   CircularProgress,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
   Stepper,
   Step,
   StepLabel,
   StepContent,
-  Paper,
   Tooltip,
-  Badge,
 } from '@mui/material';
 import {
   PlayArrow,
@@ -36,30 +28,22 @@ import {
   Add,
   Remove,
   Notifications,
-  NotificationsOff,
-  AccessTime,
   LocalPizza,
   Timer,
-  Refresh,
-  Edit,
-  Close,
-  Warning,
 } from '@mui/icons-material';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { activePizzaApi, ActivePizzaResponse, ScheduledStepResponse } from '../services/api';
+import { activePizzaApi, ScheduledStepResponse } from '../services/api';
 import { useAuthStore } from '../store/authStore';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { format, formatDistanceToNow, parseISO, differenceInMinutes } from 'date-fns';
-import { usePizzaTimer, formatTimeDistance } from '../hooks/usePizzaTimer';
+import { usePizzaTimer } from '../hooks/usePizzaTimer';
 import { pl } from 'date-fns/locale';
 
 const ActivePizzaPage: React.FC = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { isAuthenticated, user } = useAuthStore();
-  const [rescheduleDialogOpen, setRescheduleDialogOpen] = useState(false);
-  const [newBakeTime, setNewBakeTime] = useState('');
+  const { isAuthenticated } = useAuthStore();
   const [currentTime, setCurrentTime] = useState(new Date());
 
   // Aktualizuj czas co sekundę
@@ -69,7 +53,7 @@ const ActivePizzaPage: React.FC = () => {
   }, []);
 
   // Pobierz aktywną pizzę
-  const { data: activePizza, isLoading, error, refetch } = useQuery({
+  const { data: activePizza, isLoading } = useQuery({
     queryKey: ['activePizza'],
     queryFn: activePizzaApi.getCurrent,
     enabled: isAuthenticated,

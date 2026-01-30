@@ -24,7 +24,6 @@ import {
   Restaurant as RestaurantIcon,
   TrendingUp as TrendingUpIcon,
   LocalFireDepartment as FireIcon,
-  Star as StarIcon,
   CheckCircle as CheckIcon,
   ArrowForward as ArrowIcon,
   PlayArrow as PlayIcon,

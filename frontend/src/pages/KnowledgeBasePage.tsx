@@ -8,14 +8,11 @@ import {
   Grid,
   TextField,
   Chip,
-  Tabs,
-  Tab,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
   ListItemButton,
-  Divider,
   Alert,
   CircularProgress,
   InputAdornment,
@@ -39,11 +36,10 @@ import {
   Star as StarIcon,
   Lock as LockIcon,
   LocalPizza as PizzaIcon,
-  Science as ScienceIcon,
 } from '@mui/icons-material';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
-import { knowledgeApi, TechniqueGuide, CategoryInfo } from '../services/api';
+import { knowledgeApi } from '../services/api';
 import { motion } from 'framer-motion';
 import { useAuthStore } from '../store/authStore';
 
@@ -53,14 +49,14 @@ const KnowledgeBasePage: React.FC = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   const { slug } = useParams<{ slug?: string }>();
-  const { isAuthenticated, user } = useAuthStore();
+  const { user } = useAuthStore();
   const isPremium = user?.accountType === 'PREMIUM' || user?.accountType === 'PRO';
   
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   
   // Fetch categories
-  const { data: categories, isLoading: categoriesLoading } = useQuery({
+  const { data: categories } = useQuery({
     queryKey: ['knowledge-categories'],
     queryFn: knowledgeApi.getCategories,
   });
@@ -80,7 +76,7 @@ const KnowledgeBasePage: React.FC = () => {
   });
   
   // Fetch single guide if slug provided
-  const { data: singleGuide, isLoading: guideLoading } = useQuery({
+  const { data: singleGuide } = useQuery({
     queryKey: ['knowledge-guide', slug],
     queryFn: () => knowledgeApi.getGuide(slug!),
     enabled: !!slug,
