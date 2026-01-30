@@ -291,13 +291,13 @@ export const calculatorApi = {
   // Optymalizacja proporcji dla wybranych mąk
   optimizeFlourMix: async (flourIds: string[], style?: string): Promise<FlourMixSuggestion> => {
     const params = style ? `?style=${style}` : '';
-    const response = await api.post(`/api/calculator/public/flour-mix/optimize${params}`, flourIds);
+    const response = await api.post(`/api/calculator/public/flour-mix/optimize${params}`, { flourIds });
     return response.data;
   },
   
   // Oblicz parametry miksu
   calculateFlourMixParams: async (flourMix: FlourMixEntry[]): Promise<FlourMixParameters> => {
-    const response = await api.post('/api/calculator/public/flour-mix/calculate-params', flourMix);
+    const response = await api.post('/api/calculator/public/flour-mix/calculate-params', { flourMix });
     return response.data;
   },
   

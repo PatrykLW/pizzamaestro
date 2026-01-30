@@ -1,7 +1,7 @@
 # Multi-stage build for PizzaMaestro
 
 # Stage 1: Build frontend
-FROM node:20-alpine AS frontend-build
+FROM node:25-alpine AS frontend-build
 WORKDIR /app/frontend
 COPY frontend/package*.json ./
 RUN npm ci --legacy-peer-deps
@@ -9,7 +9,7 @@ COPY frontend/ ./
 RUN npm run build
 
 # Stage 2: Build backend
-FROM maven:3.9-eclipse-temurin-21 AS backend-build
+FROM maven:3-eclipse-temurin-25 AS backend-build
 WORKDIR /app
 COPY pom.xml ./
 COPY src ./src
@@ -19,7 +19,7 @@ COPY --from=frontend-build /app/frontend/build ./src/main/resources/static
 RUN mvn clean package -DskipTests -Dskip.frontend=true
 
 # Stage 3: Runtime
-FROM eclipse-temurin:21-jre-alpine
+FROM eclipse-temurin:25-jre-alpine
 WORKDIR /app
 
 # Ustaw timezone

@@ -1,6 +1,7 @@
 package com.pizzamaestro.service;
 
 import com.pizzamaestro.dto.request.CalculationRequest;
+import com.pizzamaestro.dto.request.RecipeUpdateRequest;
 import com.pizzamaestro.dto.response.CalculationResponse;
 import com.pizzamaestro.exception.ResourceNotFoundException;
 import com.pizzamaestro.exception.UnauthorizedException;
@@ -113,7 +114,7 @@ public class RecipeService {
      * Aktualizuje recepturę.
      */
     @Transactional
-    public Recipe update(String id, String userId, Recipe updates) {
+    public Recipe update(String id, String userId, RecipeUpdateRequest updates) {
         Recipe recipe = findByIdAndUserId(id, userId);
         
         if (updates.getName() != null) recipe.setName(updates.getName());
@@ -123,8 +124,8 @@ public class RecipeService {
         if (updates.getFeedback() != null) recipe.setFeedback(updates.getFeedback());
         if (updates.getTags() != null) recipe.setTags(updates.getTags());
         
-        recipe.setFavorite(updates.isFavorite());
-        recipe.setPublic(updates.isPublic());
+        if (updates.getFavorite() != null) recipe.setFavorite(updates.getFavorite());
+        if (updates.getIsPublic() != null) recipe.setPublic(updates.getIsPublic());
         
         return recipeRepository.save(recipe);
     }
@@ -267,7 +268,7 @@ public class RecipeService {
         
         recipeRepository.save(recipe);
         
-        log.info("📤 Wygenerowano token udostępniania {} dla przepisu: {}", token, recipeId);
+        log.info("📤 Wygenerowano token udostępniania {}*** dla przepisu: {}", token.substring(0, 4), recipeId);
         return token;
     }
     

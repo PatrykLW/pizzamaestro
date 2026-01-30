@@ -2,8 +2,8 @@ package com.pizzamaestro.config;
 
 import com.pizzamaestro.security.JwtAuthenticationFilter;
 import jakarta.annotation.PostConstruct;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -34,12 +34,19 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-@RequiredArgsConstructor
 @Slf4j
 public class SecurityConfig {
     
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final UserDetailsService userDetailsService;
+    
+    @Value("${app.cors.allowed-origins:http://localhost:3000,http://localhost:8080}")
+    private String allowedOriginsConfig;
+    
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter, UserDetailsService userDetailsService) {
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        this.userDetailsService = userDetailsService;
+    }
     
     @PostConstruct
     public void init() {
@@ -105,10 +112,8 @@ public class SecurityConfig {
         log.debug("🌐 Konfiguracja CORS...");
         
         CorsConfiguration configuration = new CorsConfiguration();
-        List<String> allowedOrigins = List.of(
-                "http://localhost:3000",
-                "http://localhost:8080"
-        );
+        // Origins z konfiguracji (zmienna środowiskowa APP_CORS_ALLOWED_ORIGINS)
+        List<String> allowedOrigins = Arrays.asList(allowedOriginsConfig.split(","));
         configuration.setAllowedOrigins(allowedOrigins);
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList(
