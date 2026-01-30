@@ -1,0 +1,82 @@
+# Dependabot configuration
+# Automatically creates PRs to update dependencies
+
+version: 2
+updates:
+  # Maven (Backend Java)
+  - package-ecosystem: "maven"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Europe/Warsaw"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "backend"
+      - "java"
+    commit-message:
+      prefix: "deps(backend)"
+    groups:
+      spring-boot:
+        patterns:
+          - "org.springframework*"
+      testing:
+        patterns:
+          - "*test*"
+          - "*junit*"
+          - "*mockito*"
+
+  # npm (Frontend React)
+  - package-ecosystem: "npm"
+    directory: "/frontend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Europe/Warsaw"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "frontend"
+      - "javascript"
+    commit-message:
+      prefix: "deps(frontend)"
+    groups:
+      react:
+        patterns:
+          - "react*"
+          - "@types/react*"
+      mui:
+        patterns:
+          - "@mui/*"
+          - "@emotion/*"
+      testing:
+        patterns:
+          - "*jest*"
+          - "*testing*"
+
+  # Docker
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    labels:
+      - "dependencies"
+      - "docker"
+    commit-message:
+      prefix: "deps(docker)"
+
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    labels:
+      - "dependencies"
+      - "github-actions"
+    commit-message:
+      prefix: "deps(ci)"
