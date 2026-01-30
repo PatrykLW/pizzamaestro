@@ -935,14 +935,14 @@ Wygenerowano na pizzamaestro.pl`;
                           <Chip
                             size="small"
                             icon={<WaterIcon />}
-                            label={`${style.defaults.hydration}%`}
+                            label={`${style.defaults?.hydration ?? 65}%`}
                             color="primary"
                             variant="outlined"
                           />
                           <Chip
                             size="small"
                             icon={<ScheduleIcon />}
-                            label={`${style.defaults.fermentationHours}h`}
+                            label={`${style.defaults?.fermentationHours ?? 24}h`}
                             variant="outlined"
                           />
                           <Chip
