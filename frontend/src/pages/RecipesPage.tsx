@@ -68,7 +68,7 @@ const RecipesPage: React.FC = () => {
       <Container maxWidth="lg" sx={{ py: 4 }}>
         <Grid container spacing={3}>
           {[1, 2, 3, 4].map((i) => (
-            <Grid item xs={12} sm={6} md={4} key={i}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }} key={i}>
               <Skeleton variant="rounded" height={200} />
             </Grid>
           ))}
@@ -112,7 +112,7 @@ const RecipesPage: React.FC = () => {
       ) : (
         <Grid container spacing={3}>
           {recipes.map((recipe: Recipe) => (
-            <Grid item xs={12} sm={6} md={4} key={recipe.id}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }} key={recipe.id}>
               <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
                 <CardContent sx={{ flexGrow: 1 }}>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>

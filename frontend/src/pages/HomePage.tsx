@@ -164,7 +164,7 @@ const HomePage: React.FC = () => {
       >
         <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
           <Grid container spacing={6} alignItems="center">
-            <Grid item xs={12} md={7}>
+            <Grid size={{ xs: 12, md: 7 }}>
               <MotionBox
                 initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -279,7 +279,7 @@ const HomePage: React.FC = () => {
               </MotionBox>
             </Grid>
 
-            <Grid item xs={12} md={5} sx={{ display: { xs: 'none', md: 'block' } }}>
+            <Grid size={{ xs: 12, md: 5 }} sx={{ display: { xs: 'none', md: 'block' } }}>
               <MotionBox
                 initial={{ opacity: 0, scale: 0.8, rotate: -5 }}
                 animate={{ opacity: 1, scale: 1, rotate: 0 }}
@@ -304,19 +304,19 @@ const HomePage: React.FC = () => {
                   </Box>
                   <Box sx={{ bgcolor: 'grey.100', borderRadius: 2, p: 2, mb: 2 }}>
                     <Grid container spacing={1}>
-                      <Grid item xs={6}>
+                      <Grid size={{ xs: 6 }}>
                         <Typography variant="caption" color="text.secondary">Mąka</Typography>
                         <Typography fontWeight="bold">590g</Typography>
                       </Grid>
-                      <Grid item xs={6}>
+                      <Grid size={{ xs: 6 }}>
                         <Typography variant="caption" color="text.secondary">Woda</Typography>
                         <Typography fontWeight="bold">384g</Typography>
                       </Grid>
-                      <Grid item xs={6}>
+                      <Grid size={{ xs: 6 }}>
                         <Typography variant="caption" color="text.secondary">Sól</Typography>
                         <Typography fontWeight="bold">16.5g</Typography>
                       </Grid>
-                      <Grid item xs={6}>
+                      <Grid size={{ xs: 6 }}>
                         <Typography variant="caption" color="text.secondary">Drożdże</Typography>
                         <Typography fontWeight="bold">0.9g</Typography>
                       </Grid>
@@ -366,7 +366,7 @@ const HomePage: React.FC = () => {
 
         <Grid container spacing={3}>
           {pizzaStyles.map((style, index) => (
-            <Grid item xs={12} sm={6} md={2.4} key={style.id}>
+            <Grid size={{ xs: 12, sm: 6, md: 2.4 }} key={style.id}>
               <MotionCard
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -440,7 +440,7 @@ const HomePage: React.FC = () => {
 
           <Grid container spacing={4}>
             {features.map((feature, index) => (
-              <Grid item xs={12} sm={6} md={4} key={feature.title}>
+              <Grid size={{ xs: 12, sm: 6, md: 4 }} key={feature.title}>
                 <MotionBox
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -508,7 +508,7 @@ const HomePage: React.FC = () => {
         </Box>
 
         <Grid container spacing={6} alignItems="center">
-          <Grid item xs={12} md={6}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <Box
               component="img"
               src={IMAGES.process.kneading}
@@ -520,7 +520,7 @@ const HomePage: React.FC = () => {
               }}
             />
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid size={{ xs: 12, md: 6 }}>
             {[
               { step: 1, title: 'Wprowadź parametry', desc: 'Wybierz styl pizzy, liczbę porcji, hydratację i czas fermentacji.' },
               { step: 2, title: 'Odbierz recepturę', desc: 'Otrzymaj precyzyjne ilości składników i automatyczny harmonogram.' },
@@ -579,7 +579,7 @@ const HomePage: React.FC = () => {
 
           <Grid container spacing={4}>
             {testimonials.map((testimonial, index) => (
-              <Grid item xs={12} md={4} key={index}>
+              <Grid size={{ xs: 12, md: 4 }} key={index}>
                 <MotionCard
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -623,7 +623,7 @@ const HomePage: React.FC = () => {
 
         <Grid container spacing={4} justifyContent="center">
           {pricingPlans.map((plan, index) => (
-            <Grid item xs={12} sm={6} md={4} key={plan.name}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }} key={plan.name}>
               <MotionCard
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}

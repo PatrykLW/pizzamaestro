@@ -90,7 +90,7 @@ const RecipeDetailPage: React.FC = () => {
 
       <Grid container spacing={4}>
         {/* Składniki */}
-        <Grid item xs={12} md={6}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <Card>
             <CardContent>
               <Typography variant="h6" gutterBottom>
@@ -140,7 +140,7 @@ const RecipeDetailPage: React.FC = () => {
         </Grid>
 
         {/* Info */}
-        <Grid item xs={12} md={6}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <Card>
             <CardContent>
               <Typography variant="h6" gutterBottom>
@@ -176,7 +176,7 @@ const RecipeDetailPage: React.FC = () => {
 
         {/* Harmonogram */}
         {recipe.fermentationSteps && recipe.fermentationSteps.length > 0 && (
-          <Grid item xs={12}>
+          <Grid size={{ xs: 12 }}>
             <Card>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
@@ -233,7 +233,7 @@ const RecipeDetailPage: React.FC = () => {
 
         {/* Notatki */}
         {recipe.notes && (
-          <Grid item xs={12}>
+          <Grid size={{ xs: 12 }}>
             <Card>
               <CardContent>
                 <Typography variant="h6" gutterBottom>

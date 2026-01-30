@@ -75,7 +75,7 @@ const StylesGuidePage: React.FC = () => {
 
       <Grid container spacing={3}>
         {stylesWithDetails?.map((style: StyleWithDetails) => (
-          <Grid item xs={12} key={style.id}>
+          <Grid size={{ xs: 12 }} key={style.id}>
             <Accordion>
               <AccordionSummary expandIcon={<ExpandMore />}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, width: '100%', pr: 2 }}>
@@ -96,7 +96,7 @@ const StylesGuidePage: React.FC = () => {
               </AccordionSummary>
               <AccordionDetails>
                 <Grid container spacing={3}>
-                  <Grid item xs={12} md={6}>
+                  <Grid size={{ xs: 12, md: 6 }}>
                     <Typography variant="body1" paragraph>
                       {style.description}
                     </Typography>
@@ -139,7 +139,7 @@ const StylesGuidePage: React.FC = () => {
                     </Table>
                   </Grid>
                   
-                  <Grid item xs={12} md={6}>
+                  <Grid size={{ xs: 12, md: 6 }}>
                     <Card variant="outlined">
                       <CardContent>
                         <Typography variant="subtitle2" gutterBottom>
@@ -169,7 +169,7 @@ const StylesGuidePage: React.FC = () => {
           Ogólne wskazówki
         </Typography>
         <Grid container spacing={2}>
-          <Grid item xs={12} md={4}>
+          <Grid size={{ xs: 12, md: 4 }}>
             <Typography variant="subtitle2" color="primary" gutterBottom>
               Niska hydratacja (50-60%)
             </Typography>
@@ -178,7 +178,7 @@ const StylesGuidePage: React.FC = () => {
               Stosowane w stylu nowojorskim i Chicago.
             </Typography>
           </Grid>
-          <Grid item xs={12} md={4}>
+          <Grid size={{ xs: 12, md: 4 }}>
             <Typography variant="subtitle2" color="primary" gutterBottom>
               Średnia hydratacja (60-70%)
             </Typography>
@@ -187,7 +187,7 @@ const StylesGuidePage: React.FC = () => {
               Typowe dla pizzy neapolitańskiej.
             </Typography>
           </Grid>
-          <Grid item xs={12} md={4}>
+          <Grid size={{ xs: 12, md: 4 }}>
             <Typography variant="subtitle2" color="primary" gutterBottom>
               Wysoka hydratacja (70%+)
             </Typography>
