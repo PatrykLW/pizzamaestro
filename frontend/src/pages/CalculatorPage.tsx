@@ -59,9 +59,11 @@ import { useForm, Controller } from 'react-hook-form';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { calculatorApi, ingredientsApi, weatherApi, userApi, CalculationRequest, CalculationResponse, WeatherData, FermentationAdjustment, FlourMixEntry, FlourMixSuggestion, FlourMixParameters } from '../services/api';
 import { useAuthStore } from '../store/authStore';
+import type { PizzaStyle, Ingredient, OvenType, YeastType, FermentationMethod, PrefermentType } from '../types';
 import { IMAGES, PIZZA_STYLE_IMAGES } from '../constants/images';
 import { motion, AnimatePresence as FramerAnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
+import { logger } from '../utils/logger';
 
 // Rejestracja komponentów Chart.js
 ChartJS.register(ArcElement, ChartTooltip, Legend);
@@ -259,7 +261,7 @@ const CalculatorPage: React.FC = () => {
           }
         },
         (error) => {
-          console.error('Błąd geolokalizacji:', error);
+          logger.error('Błąd geolokalizacji:', error);
           toast.error('Nie udało się pobrać lokalizacji');
           setLoadingWeather(false);
         }
@@ -395,7 +397,7 @@ const CalculatorPage: React.FC = () => {
         toast('Brak zapisanego domyślnego sprzętu w profilu', { icon: 'ℹ️' });
       }
     } catch (error) {
-      console.error('Błąd ładowania sprzętu:', error);
+      logger.error('Błąd ładowania sprzętu:', error);
       toast.error('Nie udało się załadować domyślnego sprzętu');
     } finally {
       setLoadingEquipment(false);
@@ -479,7 +481,7 @@ const CalculatorPage: React.FC = () => {
             const params = await calculatorApi.calculateFlourMixParams(flourMix);
             setFlourMixParams(params);
           } catch (error) {
-            console.error('Błąd obliczania parametrów miksu:', error);
+            logger.error('Błąd obliczania parametrów miksu:', error);
           }
         }
       } else {
@@ -770,7 +772,7 @@ Wygenerowano na pizzamaestro.pl`;
     );
   }
 
-  const selectedStyleData = styles?.find((s: any) => s.id === selectedStyle);
+  const selectedStyleData = styles?.find((s: PizzaStyle) => s.id === selectedStyle);
   const isPremium = user?.accountType === 'PREMIUM' || user?.accountType === 'PRO';
 
   return (
@@ -868,7 +870,7 @@ Wygenerowano na pizzamaestro.pl`;
               </Typography>
 
               <Grid container spacing={3}>
-                {styles?.map((style: any) => (
+                {styles?.map((style: PizzaStyle) => (
                   <Grid item xs={12} sm={6} md={4} key={style.id}>
                     <MotionCard
                       whileHover={{ y: -8, boxShadow: '0 12px 40px rgba(0,0,0,0.15)' }}
@@ -1187,10 +1189,10 @@ Wygenerowano na pizzamaestro.pl`;
                               render={({ field }) => (
                                 <Autocomplete
                                   options={flours || []}
-                                  getOptionLabel={(option: any) => 
+                                  getOptionLabel={(option: Ingredient) => 
                                     `${option.name} (${option.brand}) - ${option.flourParameters?.proteinContent || '?'}% białka${option.flourParameters?.strength ? `, W${option.flourParameters.strength}` : ''}`
                                   }
-                                  value={flours?.find((f: any) => f.id === field.value) || null}
+                                  value={flours?.find((f: Ingredient) => f.id === field.value) || null}
                                   onChange={(_, newValue) => field.onChange(newValue?.id || '')}
                                   renderInput={(params) => (
                                     <TextField
@@ -1224,7 +1226,7 @@ Wygenerowano na pizzamaestro.pl`;
                             <Box>
                               {/* Lista mąk w miksie */}
                               {flourMix.map((entry, index) => {
-                                const flour = flours?.find((f: any) => f.id === entry.flourId);
+                                const flour = flours?.find((f: Ingredient) => f.id === entry.flourId);
                                 return (
                                   <Box key={entry.flourId} sx={{ 
                                     display: 'flex', 
@@ -1273,8 +1275,8 @@ Wygenerowano na pizzamaestro.pl`;
                               
                               {/* Dodaj mąkę do miksu */}
                               <Autocomplete
-                                options={(flours || []).filter((f: any) => !flourMix.some(m => m.flourId === f.id))}
-                                getOptionLabel={(option: any) => `${option.name} (${option.brand})`}
+                                options={(flours || []).filter((f: Ingredient) => !flourMix.some(m => m.flourId === f.id))}
+                                getOptionLabel={(option: Ingredient) => `${option.name} (${option.brand})`}
                                 onChange={(_, newValue) => {
                                   if (newValue) addFlourToMix(newValue.id);
                                 }}
@@ -1535,7 +1537,7 @@ Wygenerowano na pizzamaestro.pl`;
                           control={control}
                           render={({ field }) => (
                             <TextField {...field} select label="Typ drożdży" fullWidth>
-                              {yeastTypes?.map((type: any) => (
+                              {yeastTypes?.map((type: YeastType) => (
                                 <MenuItem key={type.id} value={type.id}>
                                   {type.name}
                                 </MenuItem>
@@ -1769,7 +1771,7 @@ Wygenerowano na pizzamaestro.pl`;
                           control={control}
                           render={({ field }) => (
                             <TextField {...field} select label="Typ pieca" fullWidth>
-                              {ovens?.map((oven: any) => (
+                              {ovens?.map((oven: OvenType) => (
                                 <MenuItem key={oven.id} value={oven.id}>
                                   {oven.name} ({oven.minTemperature}-{oven.maxTemperature}°C)
                                 </MenuItem>
@@ -1809,7 +1811,7 @@ Wygenerowano na pizzamaestro.pl`;
                                 control={control}
                                 render={({ field }) => (
                                   <TextField {...field} select label="Typ prefermentu" fullWidth sx={{ mt: 2 }}>
-                                    {prefermentTypes?.map((type: any) => (
+                                    {prefermentTypes?.map((type: PrefermentType) => (
                                       <MenuItem key={type.id} value={type.id}>
                                         {type.name}
                                       </MenuItem>

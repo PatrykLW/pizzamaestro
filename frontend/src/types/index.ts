@@ -94,21 +94,45 @@ export interface PrefermentType {
 
 // ========== Składniki ==========
 
+export interface FlourParameters {
+  flourType: string;
+  proteinContent: number;
+  strength?: number;
+  extensibility?: number;
+  recommendedHydrationMin: number;
+  recommendedHydrationMax: number;
+  ashContent?: number;
+  recommendedStyles?: string[];
+}
+
+export interface WaterParameters {
+  hardnessLevel: 'SOFT' | 'MEDIUM' | 'HARD' | 'VERY_HARD';
+  mineralContent?: number;
+  ph?: number;
+  chlorineLevel?: number;
+}
+
 export interface Ingredient {
   id: string;
   name: string;
   type: 'FLOUR' | 'WATER' | 'YEAST' | 'SALT' | 'OIL' | 'SUGAR';
   brand?: string;
+  origin?: string;
   description?: string;
+  // Pola dla kompatybilności wstecznej
   proteinContent?: number;
   strengthW?: number;
   flourType?: string;
   hardnessLevel?: 'SOFT' | 'MEDIUM' | 'HARD' | 'VERY_HARD';
   mineralContent?: number;
   ph?: number;
-  recommendedForStyles: string[];
+  // Nowe zagnieżdżone parametry z API
+  flourParameters?: FlourParameters;
+  waterParameters?: WaterParameters;
+  recommendedForStyles?: string[];
   notes?: string;
-  premium: boolean;
+  premium?: boolean;
+  verified?: boolean;
   active: boolean;
 }
 

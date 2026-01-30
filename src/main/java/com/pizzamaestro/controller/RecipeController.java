@@ -5,6 +5,7 @@ import com.pizzamaestro.service.PdfExportService;
 import com.pizzamaestro.service.RecipeService;
 import com.pizzamaestro.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -84,7 +85,7 @@ public class RecipeController {
     @Operation(summary = "Aktualizacja receptury")
     public ResponseEntity<Recipe> updateRecipe(
             @PathVariable String id,
-            @RequestBody Recipe updates,
+            @Valid @RequestBody Recipe updates,
             @AuthenticationPrincipal UserDetails userDetails) {
         
         String userId = getUserId(userDetails);
@@ -235,7 +236,7 @@ public class RecipeController {
     @GetMapping("/shared/{token}")
     @Operation(summary = "Pobierz udostępniony przepis (publiczny)")
     public ResponseEntity<Recipe> getSharedRecipe(@PathVariable String token) {
-        log.info("📥 Pobieranie udostępnionego przepisu: {}", token);
+        log.info("📥 Pobieranie udostępnionego przepisu: {}***", token.length() > 4 ? token.substring(0, 4) : "****");
         
         Recipe recipe = recipeService.findByShareToken(token);
         return ResponseEntity.ok(recipe);

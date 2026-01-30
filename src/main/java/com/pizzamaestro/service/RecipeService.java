@@ -267,7 +267,7 @@ public class RecipeService {
         
         recipeRepository.save(recipe);
         
-        log.info("📤 Wygenerowano token udostępniania {} dla przepisu: {}", token, recipeId);
+        log.info("📤 Wygenerowano token udostępniania {}*** dla przepisu: {}", token.substring(0, 4), recipeId);
         return token;
     }
     
