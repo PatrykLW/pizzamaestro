@@ -593,13 +593,21 @@ Wygenerowano na pizzamaestro.pl`;
                   <Grid item xs={12} sm={6} md={4} key={style.id}>
                     <MotionCard
                       whileHover={{ y: -8, boxShadow: '0 12px 40px rgba(0,0,0,0.15)' }}
-                      onClick={() => setValue('pizzaStyle', style.id)}
+                      onClick={() => {
+                        setValue('pizzaStyle', style.id);
+                        // Od razu przejdź do kalkulatora po kliknięciu
+                        setTimeout(() => handleNext(), 150);
+                      }}
                       sx={{
                         cursor: 'pointer',
                         height: '100%',
                         border: selectedStyle === style.id ? 3 : 1,
                         borderColor: selectedStyle === style.id ? 'primary.main' : 'divider',
                         overflow: 'hidden',
+                        transition: 'all 0.2s ease',
+                        '&:hover': {
+                          borderColor: 'primary.main',
+                        },
                       }}
                     >
                       <Box sx={{ position: 'relative' }}>
@@ -670,16 +678,10 @@ Wygenerowano na pizzamaestro.pl`;
                 ))}
               </Grid>
 
-              <Box sx={{ mt: 4, display: 'flex', justifyContent: 'flex-end' }}>
-                <Button
-                  variant="contained"
-                  size="large"
-                  onClick={handleNext}
-                  sx={{ px: 4 }}
-                  startIcon={<CalculateIcon />}
-                >
-                  Przejdź do kalkulatora {selectedStyleData?.name || 'pizzy'}
-                </Button>
+              <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: 2 }}>
+                <Typography variant="body2" color="text.secondary">
+                  👆 Kliknij na wybrany styl aby przejść do kalkulatora
+                </Typography>
               </Box>
             </MotionBox>
           )}
