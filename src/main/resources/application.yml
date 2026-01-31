@@ -32,10 +32,10 @@ server:
     mime-types: application/json,application/xml,text/html,text/xml,text/plain,application/javascript,text/css
 
 # JWT Configuration
-# CRITICAL: JWT_SECRET must be set as environment variable (min. 256 bits)
-# Application will fail to start without it - this is intentional for security
+# W produkcji JWT_SECRET MUSI być ustawiony jako zmienna środowiskowa (min. 256 bits)
+# Wartość domyślna jest tylko do lokalnego developmentu
 jwt:
-  secret: ${JWT_SECRET}
+  secret: ${JWT_SECRET:localDevelopmentSecretKeyMustBeAtLeast32CharsLongForHS256Algorithm}
   expiration: ${JWT_EXPIRATION:86400000} # 24 hours in milliseconds
   refresh-expiration: ${JWT_REFRESH_EXPIRATION:604800000} # 7 days
 
