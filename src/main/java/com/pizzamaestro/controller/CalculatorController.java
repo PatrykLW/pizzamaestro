@@ -96,7 +96,9 @@ public class CalculatorController {
     }
     
     /**
-     * Kalkulacja dla zalogowanych użytkowników z opcją zapisu.
+     * Kalkulacja receptury - działa zarówno dla zalogowanych jak i niezalogowanych.
+     * Dla zalogowanych: możliwość zapisu i śledzenie limitów.
+     * Dla niezalogowanych: jak publiczna kalkulacja (bez zapisywania).
      */
     @PostMapping("/calculate")
     @Operation(summary = "Kalkulacja receptury z opcją zapisania", 
@@ -104,6 +106,14 @@ public class CalculatorController {
     public ResponseEntity<CalculationResponse> calculate(
             @Valid @RequestBody CalculationRequest request,
             @AuthenticationPrincipal UserPrincipal userPrincipal) {
+        
+        // Jeśli użytkownik nie jest zalogowany - traktuj jak publiczną kalkulację
+        if (userPrincipal == null) {
+            log.info("📊 Kalkulacja bez zalogowania - tryb publiczny");
+            request.setSaveRecipe(false);
+            CalculationResponse response = calculatorService.calculate(request);
+            return ResponseEntity.ok(response);
+        }
         
         String userId = userPrincipal.getUserId();
         log.info("Kalkulacja dla użytkownika {}: {} pizz, styl: {}", 
@@ -303,7 +313,9 @@ public class CalculatorController {
     }
     
     /**
-     * Sugeruje miks mąk dla stylu pizzy (zalogowany - używa mąk z profilu).
+     * Sugeruje miks mąk dla stylu pizzy.
+     * Dla zalogowanych: używa mąk z profilu użytkownika.
+     * Dla niezalogowanych: używa wszystkich dostępnych mąk.
      */
     @GetMapping("/flour-mix/suggest")
     @Operation(summary = "Sugestia miksu mąk dla stylu pizzy (z profilem użytkownika)")
@@ -312,13 +324,20 @@ public class CalculatorController {
             @RequestParam PizzaStyle style,
             @AuthenticationPrincipal UserPrincipal userPrincipal) {
         
-        String userId = userPrincipal.getUserId();
-        var user = userService.findById(userId);
-        List<String> availableFlourIds = user.getPreferences() != null ? 
-                user.getPreferences().getAvailableFlourIds() : null;
+        List<String> availableFlourIds = null;
         
-        log.info("🌾 Sugestia miksu dla użytkownika {}, styl: {}, dostępne mąki: {}", 
-                userId, style, availableFlourIds != null ? availableFlourIds.size() : "wszystkie");
+        // Jeśli użytkownik jest zalogowany - pobierz jego mąki z profilu
+        if (userPrincipal != null) {
+            String userId = userPrincipal.getUserId();
+            var user = userService.findById(userId);
+            availableFlourIds = user.getPreferences() != null ? 
+                    user.getPreferences().getAvailableFlourIds() : null;
+            
+            log.info("🌾 Sugestia miksu dla użytkownika {}, styl: {}, dostępne mąki: {}", 
+                    userId, style, availableFlourIds != null ? availableFlourIds.size() : "wszystkie");
+        } else {
+            log.info("🌾 Sugestia miksu (bez logowania), styl: {}", style);
+        }
         
         FlourMixSuggestionService.FlourMixSuggestion suggestion = 
                 flourMixSuggestionService.suggestForStyle(style, availableFlourIds);

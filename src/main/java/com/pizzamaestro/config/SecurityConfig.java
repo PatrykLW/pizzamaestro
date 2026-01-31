@@ -72,8 +72,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Publiczne endpointy
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/calculator/public/**").permitAll()
-                        .requestMatchers("/api/ingredients/public/**").permitAll()
+                        .requestMatchers("/api/calculator/**").permitAll()
+                        .requestMatchers("/api/ingredients/**").permitAll()
                         .requestMatchers("/api/styles/**").permitAll()
                         .requestMatchers("/api/tips/**").permitAll()
                         .requestMatchers("/api/weather/**").permitAll()

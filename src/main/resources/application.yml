@@ -5,7 +5,8 @@ spring:
   data:
     mongodb:
       # WAŻNE: W produkcji ustaw MONGODB_URI jako zmienna środowiskowa
-      uri: ${MONGODB_URI:mongodb://localhost:27017/pizzamaestro}
+      # Domyślnie używa danych z docker-compose (pizzamaestro/localDevPassword123)
+      uri: ${MONGODB_URI:mongodb://pizzamaestro:localDevPassword123@localhost:27017/pizzamaestro?authSource=admin}
       auto-index-creation: true
   
   mail:
