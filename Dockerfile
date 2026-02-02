@@ -19,7 +19,7 @@ COPY --from=frontend-build /app/frontend/build ./src/main/resources/static
 RUN mvn clean package -DskipTests -Dskip.frontend=true
 
 # Stage 3: Runtime (Java 21 LTS - stable)
-FROM eclipse-temurin:21-jre-alpine
+FROM eclipse-temurin:25-jre-alpine
 WORKDIR /app
 
 # Install wget for healthcheck and set timezone
